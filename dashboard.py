@@ -1,3231 +1,633 @@
-{
-  "cells": [
-    {
-      "cell_type": "markdown",
-      "source": [
-        "#ORIGINAL"
-      ],
-      "metadata": {
-        "id": "WIXBK4X8OXtn"
-      },
-      "id": "WIXBK4X8OXtn"
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "!pip install dash"
-      ],
-      "metadata": {
-        "id": "NyHRkY2n_uzz",
-        "outputId": "d27e600f-9077-4b58-90e5-733fa4f47d87",
-        "colab": {
-          "base_uri": "https://localhost:8080/"
-        }
-      },
-      "id": "NyHRkY2n_uzz",
-      "execution_count": null,
-      "outputs": [
-        {
-          "output_type": "stream",
-          "name": "stdout",
-          "text": [
-            "Requirement already satisfied: dash in /usr/local/lib/python3.11/dist-packages (3.0.4)\n",
-            "Requirement already satisfied: Flask<3.1,>=1.0.4 in /usr/local/lib/python3.11/dist-packages (from dash) (3.0.3)\n",
-            "Requirement already satisfied: Werkzeug<3.1 in /usr/local/lib/python3.11/dist-packages (from dash) (3.0.6)\n",
-            "Requirement already satisfied: plotly>=5.0.0 in /usr/local/lib/python3.11/dist-packages (from dash) (5.24.1)\n",
-            "Requirement already satisfied: importlib-metadata in /usr/local/lib/python3.11/dist-packages (from dash) (8.7.0)\n",
-            "Requirement already satisfied: typing-extensions>=4.1.1 in /usr/local/lib/python3.11/dist-packages (from dash) (4.13.2)\n",
-            "Requirement already satisfied: requests in /usr/local/lib/python3.11/dist-packages (from dash) (2.32.3)\n",
-            "Requirement already satisfied: retrying in /usr/local/lib/python3.11/dist-packages (from dash) (1.3.4)\n",
-            "Requirement already satisfied: nest-asyncio in /usr/local/lib/python3.11/dist-packages (from dash) (1.6.0)\n",
-            "Requirement already satisfied: setuptools in /usr/local/lib/python3.11/dist-packages (from dash) (75.2.0)\n",
-            "Requirement already satisfied: Jinja2>=3.1.2 in /usr/local/lib/python3.11/dist-packages (from Flask<3.1,>=1.0.4->dash) (3.1.6)\n",
-            "Requirement already satisfied: itsdangerous>=2.1.2 in /usr/local/lib/python3.11/dist-packages (from Flask<3.1,>=1.0.4->dash) (2.2.0)\n",
-            "Requirement already satisfied: click>=8.1.3 in /usr/local/lib/python3.11/dist-packages (from Flask<3.1,>=1.0.4->dash) (8.1.8)\n",
-            "Requirement already satisfied: blinker>=1.6.2 in /usr/local/lib/python3.11/dist-packages (from Flask<3.1,>=1.0.4->dash) (1.9.0)\n",
-            "Requirement already satisfied: tenacity>=6.2.0 in /usr/local/lib/python3.11/dist-packages (from plotly>=5.0.0->dash) (9.1.2)\n",
-            "Requirement already satisfied: packaging in /usr/local/lib/python3.11/dist-packages (from plotly>=5.0.0->dash) (24.2)\n",
-            "Requirement already satisfied: MarkupSafe>=2.1.1 in /usr/local/lib/python3.11/dist-packages (from Werkzeug<3.1->dash) (3.0.2)\n",
-            "Requirement already satisfied: zipp>=3.20 in /usr/local/lib/python3.11/dist-packages (from importlib-metadata->dash) (3.21.0)\n",
-            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.11/dist-packages (from requests->dash) (3.4.2)\n",
-            "Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.11/dist-packages (from requests->dash) (3.10)\n",
-            "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.11/dist-packages (from requests->dash) (2.4.0)\n",
-            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.11/dist-packages (from requests->dash) (2025.4.26)\n",
-            "Requirement already satisfied: six>=1.7.0 in /usr/local/lib/python3.11/dist-packages (from retrying->dash) (1.17.0)\n"
-          ]
-        }
-      ]
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "!pip install dash dash_core_components dash_html_components"
-      ],
-      "metadata": {
-        "colab": {
-          "base_uri": "https://localhost:8080/"
-        },
-        "id": "1U4z10nFACaJ",
-        "outputId": "f6ff130d-ea48-4f91-a5bf-9b5da4f60a94"
-      },
-      "id": "1U4z10nFACaJ",
-      "execution_count": null,
-      "outputs": [
-        {
-          "output_type": "stream",
-          "name": "stdout",
-          "text": [
-            "Requirement already satisfied: dash in /usr/local/lib/python3.11/dist-packages (3.0.4)\n",
-            "Collecting dash_core_components\n",
-            "  Downloading dash_core_components-2.0.0-py3-none-any.whl.metadata (2.9 kB)\n",
-            "Collecting dash_html_components\n",
-            "  Downloading dash_html_components-2.0.0-py3-none-any.whl.metadata (3.8 kB)\n",
-            "Requirement already satisfied: Flask<3.1,>=1.0.4 in /usr/local/lib/python3.11/dist-packages (from dash) (3.0.3)\n",
-            "Requirement already satisfied: Werkzeug<3.1 in /usr/local/lib/python3.11/dist-packages (from dash) (3.0.6)\n",
-            "Requirement already satisfied: plotly>=5.0.0 in /usr/local/lib/python3.11/dist-packages (from dash) (5.24.1)\n",
-            "Requirement already satisfied: importlib-metadata in /usr/local/lib/python3.11/dist-packages (from dash) (8.7.0)\n",
-            "Requirement already satisfied: typing-extensions>=4.1.1 in /usr/local/lib/python3.11/dist-packages (from dash) (4.13.2)\n",
-            "Requirement already satisfied: requests in /usr/local/lib/python3.11/dist-packages (from dash) (2.32.3)\n",
-            "Requirement already satisfied: retrying in /usr/local/lib/python3.11/dist-packages (from dash) (1.3.4)\n",
-            "Requirement already satisfied: nest-asyncio in /usr/local/lib/python3.11/dist-packages (from dash) (1.6.0)\n",
-            "Requirement already satisfied: setuptools in /usr/local/lib/python3.11/dist-packages (from dash) (75.2.0)\n",
-            "Requirement already satisfied: Jinja2>=3.1.2 in /usr/local/lib/python3.11/dist-packages (from Flask<3.1,>=1.0.4->dash) (3.1.6)\n",
-            "Requirement already satisfied: itsdangerous>=2.1.2 in /usr/local/lib/python3.11/dist-packages (from Flask<3.1,>=1.0.4->dash) (2.2.0)\n",
-            "Requirement already satisfied: click>=8.1.3 in /usr/local/lib/python3.11/dist-packages (from Flask<3.1,>=1.0.4->dash) (8.1.8)\n",
-            "Requirement already satisfied: blinker>=1.6.2 in /usr/local/lib/python3.11/dist-packages (from Flask<3.1,>=1.0.4->dash) (1.9.0)\n",
-            "Requirement already satisfied: tenacity>=6.2.0 in /usr/local/lib/python3.11/dist-packages (from plotly>=5.0.0->dash) (9.1.2)\n",
-            "Requirement already satisfied: packaging in /usr/local/lib/python3.11/dist-packages (from plotly>=5.0.0->dash) (24.2)\n",
-            "Requirement already satisfied: MarkupSafe>=2.1.1 in /usr/local/lib/python3.11/dist-packages (from Werkzeug<3.1->dash) (3.0.2)\n",
-            "Requirement already satisfied: zipp>=3.20 in /usr/local/lib/python3.11/dist-packages (from importlib-metadata->dash) (3.21.0)\n",
-            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.11/dist-packages (from requests->dash) (3.4.2)\n",
-            "Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.11/dist-packages (from requests->dash) (3.10)\n",
-            "Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.11/dist-packages (from requests->dash) (2.4.0)\n",
-            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.11/dist-packages (from requests->dash) (2025.4.26)\n",
-            "Requirement already satisfied: six>=1.7.0 in /usr/local/lib/python3.11/dist-packages (from retrying->dash) (1.17.0)\n",
-            "Downloading dash_core_components-2.0.0-py3-none-any.whl (3.8 kB)\n",
-            "Downloading dash_html_components-2.0.0-py3-none-any.whl (4.1 kB)\n",
-            "Installing collected packages: dash_html_components, dash_core_components\n",
-            "Successfully installed dash_core_components-2.0.0 dash_html_components-2.0.0\n"
-          ]
-        }
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "1e923c10",
-      "metadata": {
-        "id": "1e923c10"
-      },
-      "outputs": [],
-      "source": [
-        "#Passo 1 -> Lendo os dados e realizando o tratamento\n",
-        "\n",
-        "import pandas as pd\n",
-        "import plotly.express as px\n",
-        "import dash\n",
-        "import dash_core_components as dcc\n",
-        "import dash_html_components as html\n",
-        "\n",
-        "# Load the CSV file\n",
-        "df=pd.read_csv('/content/sample_data/Summer_olympic_Medals.csv')\n",
-        "# Replace 'United States' with 'United States of America' in the 'Country_Name' column\n",
-        "df['Country_Name'] = df['Country_Name'].replace('United States', 'United States of America')"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "4c679c78",
-      "metadata": {
-        "id": "4c679c78",
-        "outputId": "702f6a7b-b675-4bff-d2ae-6069b47d90d3",
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 423
-        }
-      },
-      "outputs": [
-        {
-          "output_type": "execute_result",
-          "data": {
-            "text/plain": [
-              "      Year Host_country Host_city              Country_Name Country_Code  \\\n",
-              "0     1896       Greece    Athens             Great Britain          GBR   \n",
-              "1     1896       Greece    Athens                   Hungary          HUN   \n",
-              "2     1896       Greece    Athens                    France          FRA   \n",
-              "3     1896       Greece    Athens  United States of America          USA   \n",
-              "4     1896       Greece    Athens                   Germany          GER   \n",
-              "...    ...          ...       ...                       ...          ...   \n",
-              "1339  2020        Japan     Tokyo                      Fiji          FIJ   \n",
-              "1340  2020        Japan     Tokyo                   Estonia          EST   \n",
-              "1341  2020        Japan     Tokyo                    Latvia          LAT   \n",
-              "1342  2020        Japan     Tokyo                   Bermuda          BER   \n",
-              "1343  2020        Japan     Tokyo                  Thailand          THA   \n",
-              "\n",
-              "      Gold  Silver  Bronze  \n",
-              "0        2       3       2  \n",
-              "1        2       1       3  \n",
-              "2        5       4       2  \n",
-              "3       11       7       2  \n",
-              "4        6       5       2  \n",
-              "...    ...     ...     ...  \n",
-              "1339     1       0       1  \n",
-              "1340     1       0       1  \n",
-              "1341     1       0       1  \n",
-              "1342     1       0       0  \n",
-              "1343     1       0       1  \n",
-              "\n",
-              "[1344 rows x 8 columns]"
-            ],
-            "text/html": [
-              "\n",
-              "  <div id=\"df-2a8284c2-2e32-41eb-841d-21e16e575287\" class=\"colab-df-container\">\n",
-              "    <div>\n",
-              "<style scoped>\n",
-              "    .dataframe tbody tr th:only-of-type {\n",
-              "        vertical-align: middle;\n",
-              "    }\n",
-              "\n",
-              "    .dataframe tbody tr th {\n",
-              "        vertical-align: top;\n",
-              "    }\n",
-              "\n",
-              "    .dataframe thead th {\n",
-              "        text-align: right;\n",
-              "    }\n",
-              "</style>\n",
-              "<table border=\"1\" class=\"dataframe\">\n",
-              "  <thead>\n",
-              "    <tr style=\"text-align: right;\">\n",
-              "      <th></th>\n",
-              "      <th>Year</th>\n",
-              "      <th>Host_country</th>\n",
-              "      <th>Host_city</th>\n",
-              "      <th>Country_Name</th>\n",
-              "      <th>Country_Code</th>\n",
-              "      <th>Gold</th>\n",
-              "      <th>Silver</th>\n",
-              "      <th>Bronze</th>\n",
-              "    </tr>\n",
-              "  </thead>\n",
-              "  <tbody>\n",
-              "    <tr>\n",
-              "      <th>0</th>\n",
-              "      <td>1896</td>\n",
-              "      <td>Greece</td>\n",
-              "      <td>Athens</td>\n",
-              "      <td>Great Britain</td>\n",
-              "      <td>GBR</td>\n",
-              "      <td>2</td>\n",
-              "      <td>3</td>\n",
-              "      <td>2</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>1</th>\n",
-              "      <td>1896</td>\n",
-              "      <td>Greece</td>\n",
-              "      <td>Athens</td>\n",
-              "      <td>Hungary</td>\n",
-              "      <td>HUN</td>\n",
-              "      <td>2</td>\n",
-              "      <td>1</td>\n",
-              "      <td>3</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>2</th>\n",
-              "      <td>1896</td>\n",
-              "      <td>Greece</td>\n",
-              "      <td>Athens</td>\n",
-              "      <td>France</td>\n",
-              "      <td>FRA</td>\n",
-              "      <td>5</td>\n",
-              "      <td>4</td>\n",
-              "      <td>2</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>3</th>\n",
-              "      <td>1896</td>\n",
-              "      <td>Greece</td>\n",
-              "      <td>Athens</td>\n",
-              "      <td>United States of America</td>\n",
-              "      <td>USA</td>\n",
-              "      <td>11</td>\n",
-              "      <td>7</td>\n",
-              "      <td>2</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>4</th>\n",
-              "      <td>1896</td>\n",
-              "      <td>Greece</td>\n",
-              "      <td>Athens</td>\n",
-              "      <td>Germany</td>\n",
-              "      <td>GER</td>\n",
-              "      <td>6</td>\n",
-              "      <td>5</td>\n",
-              "      <td>2</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>...</th>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>1339</th>\n",
-              "      <td>2020</td>\n",
-              "      <td>Japan</td>\n",
-              "      <td>Tokyo</td>\n",
-              "      <td>Fiji</td>\n",
-              "      <td>FIJ</td>\n",
-              "      <td>1</td>\n",
-              "      <td>0</td>\n",
-              "      <td>1</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>1340</th>\n",
-              "      <td>2020</td>\n",
-              "      <td>Japan</td>\n",
-              "      <td>Tokyo</td>\n",
-              "      <td>Estonia</td>\n",
-              "      <td>EST</td>\n",
-              "      <td>1</td>\n",
-              "      <td>0</td>\n",
-              "      <td>1</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>1341</th>\n",
-              "      <td>2020</td>\n",
-              "      <td>Japan</td>\n",
-              "      <td>Tokyo</td>\n",
-              "      <td>Latvia</td>\n",
-              "      <td>LAT</td>\n",
-              "      <td>1</td>\n",
-              "      <td>0</td>\n",
-              "      <td>1</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>1342</th>\n",
-              "      <td>2020</td>\n",
-              "      <td>Japan</td>\n",
-              "      <td>Tokyo</td>\n",
-              "      <td>Bermuda</td>\n",
-              "      <td>BER</td>\n",
-              "      <td>1</td>\n",
-              "      <td>0</td>\n",
-              "      <td>0</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>1343</th>\n",
-              "      <td>2020</td>\n",
-              "      <td>Japan</td>\n",
-              "      <td>Tokyo</td>\n",
-              "      <td>Thailand</td>\n",
-              "      <td>THA</td>\n",
-              "      <td>1</td>\n",
-              "      <td>0</td>\n",
-              "      <td>1</td>\n",
-              "    </tr>\n",
-              "  </tbody>\n",
-              "</table>\n",
-              "<p>1344 rows × 8 columns</p>\n",
-              "</div>\n",
-              "    <div class=\"colab-df-buttons\">\n",
-              "\n",
-              "  <div class=\"colab-df-container\">\n",
-              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-2a8284c2-2e32-41eb-841d-21e16e575287')\"\n",
-              "            title=\"Convert this dataframe to an interactive table.\"\n",
-              "            style=\"display:none;\">\n",
-              "\n",
-              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
-              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
-              "  </svg>\n",
-              "    </button>\n",
-              "\n",
-              "  <style>\n",
-              "    .colab-df-container {\n",
-              "      display:flex;\n",
-              "      gap: 12px;\n",
-              "    }\n",
-              "\n",
-              "    .colab-df-convert {\n",
-              "      background-color: #E8F0FE;\n",
-              "      border: none;\n",
-              "      border-radius: 50%;\n",
-              "      cursor: pointer;\n",
-              "      display: none;\n",
-              "      fill: #1967D2;\n",
-              "      height: 32px;\n",
-              "      padding: 0 0 0 0;\n",
-              "      width: 32px;\n",
-              "    }\n",
-              "\n",
-              "    .colab-df-convert:hover {\n",
-              "      background-color: #E2EBFA;\n",
-              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
-              "      fill: #174EA6;\n",
-              "    }\n",
-              "\n",
-              "    .colab-df-buttons div {\n",
-              "      margin-bottom: 4px;\n",
-              "    }\n",
-              "\n",
-              "    [theme=dark] .colab-df-convert {\n",
-              "      background-color: #3B4455;\n",
-              "      fill: #D2E3FC;\n",
-              "    }\n",
-              "\n",
-              "    [theme=dark] .colab-df-convert:hover {\n",
-              "      background-color: #434B5C;\n",
-              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
-              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
-              "      fill: #FFFFFF;\n",
-              "    }\n",
-              "  </style>\n",
-              "\n",
-              "    <script>\n",
-              "      const buttonEl =\n",
-              "        document.querySelector('#df-2a8284c2-2e32-41eb-841d-21e16e575287 button.colab-df-convert');\n",
-              "      buttonEl.style.display =\n",
-              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
-              "\n",
-              "      async function convertToInteractive(key) {\n",
-              "        const element = document.querySelector('#df-2a8284c2-2e32-41eb-841d-21e16e575287');\n",
-              "        const dataTable =\n",
-              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
-              "                                                    [key], {});\n",
-              "        if (!dataTable) return;\n",
-              "\n",
-              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
-              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
-              "          + ' to learn more about interactive tables.';\n",
-              "        element.innerHTML = '';\n",
-              "        dataTable['output_type'] = 'display_data';\n",
-              "        await google.colab.output.renderOutput(dataTable, element);\n",
-              "        const docLink = document.createElement('div');\n",
-              "        docLink.innerHTML = docLinkHtml;\n",
-              "        element.appendChild(docLink);\n",
-              "      }\n",
-              "    </script>\n",
-              "  </div>\n",
-              "\n",
-              "\n",
-              "    <div id=\"df-876b1f19-7fbe-47dd-97c3-d0ea2b237405\">\n",
-              "      <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-876b1f19-7fbe-47dd-97c3-d0ea2b237405')\"\n",
-              "                title=\"Suggest charts\"\n",
-              "                style=\"display:none;\">\n",
-              "\n",
-              "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
-              "     width=\"24px\">\n",
-              "    <g>\n",
-              "        <path d=\"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z\"/>\n",
-              "    </g>\n",
-              "</svg>\n",
-              "      </button>\n",
-              "\n",
-              "<style>\n",
-              "  .colab-df-quickchart {\n",
-              "      --bg-color: #E8F0FE;\n",
-              "      --fill-color: #1967D2;\n",
-              "      --hover-bg-color: #E2EBFA;\n",
-              "      --hover-fill-color: #174EA6;\n",
-              "      --disabled-fill-color: #AAA;\n",
-              "      --disabled-bg-color: #DDD;\n",
-              "  }\n",
-              "\n",
-              "  [theme=dark] .colab-df-quickchart {\n",
-              "      --bg-color: #3B4455;\n",
-              "      --fill-color: #D2E3FC;\n",
-              "      --hover-bg-color: #434B5C;\n",
-              "      --hover-fill-color: #FFFFFF;\n",
-              "      --disabled-bg-color: #3B4455;\n",
-              "      --disabled-fill-color: #666;\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-quickchart {\n",
-              "    background-color: var(--bg-color);\n",
-              "    border: none;\n",
-              "    border-radius: 50%;\n",
-              "    cursor: pointer;\n",
-              "    display: none;\n",
-              "    fill: var(--fill-color);\n",
-              "    height: 32px;\n",
-              "    padding: 0;\n",
-              "    width: 32px;\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-quickchart:hover {\n",
-              "    background-color: var(--hover-bg-color);\n",
-              "    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
-              "    fill: var(--button-hover-fill-color);\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-quickchart-complete:disabled,\n",
-              "  .colab-df-quickchart-complete:disabled:hover {\n",
-              "    background-color: var(--disabled-bg-color);\n",
-              "    fill: var(--disabled-fill-color);\n",
-              "    box-shadow: none;\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-spinner {\n",
-              "    border: 2px solid var(--fill-color);\n",
-              "    border-color: transparent;\n",
-              "    border-bottom-color: var(--fill-color);\n",
-              "    animation:\n",
-              "      spin 1s steps(1) infinite;\n",
-              "  }\n",
-              "\n",
-              "  @keyframes spin {\n",
-              "    0% {\n",
-              "      border-color: transparent;\n",
-              "      border-bottom-color: var(--fill-color);\n",
-              "      border-left-color: var(--fill-color);\n",
-              "    }\n",
-              "    20% {\n",
-              "      border-color: transparent;\n",
-              "      border-left-color: var(--fill-color);\n",
-              "      border-top-color: var(--fill-color);\n",
-              "    }\n",
-              "    30% {\n",
-              "      border-color: transparent;\n",
-              "      border-left-color: var(--fill-color);\n",
-              "      border-top-color: var(--fill-color);\n",
-              "      border-right-color: var(--fill-color);\n",
-              "    }\n",
-              "    40% {\n",
-              "      border-color: transparent;\n",
-              "      border-right-color: var(--fill-color);\n",
-              "      border-top-color: var(--fill-color);\n",
-              "    }\n",
-              "    60% {\n",
-              "      border-color: transparent;\n",
-              "      border-right-color: var(--fill-color);\n",
-              "    }\n",
-              "    80% {\n",
-              "      border-color: transparent;\n",
-              "      border-right-color: var(--fill-color);\n",
-              "      border-bottom-color: var(--fill-color);\n",
-              "    }\n",
-              "    90% {\n",
-              "      border-color: transparent;\n",
-              "      border-bottom-color: var(--fill-color);\n",
-              "    }\n",
-              "  }\n",
-              "</style>\n",
-              "\n",
-              "      <script>\n",
-              "        async function quickchart(key) {\n",
-              "          const quickchartButtonEl =\n",
-              "            document.querySelector('#' + key + ' button');\n",
-              "          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.\n",
-              "          quickchartButtonEl.classList.add('colab-df-spinner');\n",
-              "          try {\n",
-              "            const charts = await google.colab.kernel.invokeFunction(\n",
-              "                'suggestCharts', [key], {});\n",
-              "          } catch (error) {\n",
-              "            console.error('Error during call to suggestCharts:', error);\n",
-              "          }\n",
-              "          quickchartButtonEl.classList.remove('colab-df-spinner');\n",
-              "          quickchartButtonEl.classList.add('colab-df-quickchart-complete');\n",
-              "        }\n",
-              "        (() => {\n",
-              "          let quickchartButtonEl =\n",
-              "            document.querySelector('#df-876b1f19-7fbe-47dd-97c3-d0ea2b237405 button');\n",
-              "          quickchartButtonEl.style.display =\n",
-              "            google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
-              "        })();\n",
-              "      </script>\n",
-              "    </div>\n",
-              "\n",
-              "  <div id=\"id_ddde9e86-ed84-4fe4-9a27-46a86b081617\">\n",
-              "    <style>\n",
-              "      .colab-df-generate {\n",
-              "        background-color: #E8F0FE;\n",
-              "        border: none;\n",
-              "        border-radius: 50%;\n",
-              "        cursor: pointer;\n",
-              "        display: none;\n",
-              "        fill: #1967D2;\n",
-              "        height: 32px;\n",
-              "        padding: 0 0 0 0;\n",
-              "        width: 32px;\n",
-              "      }\n",
-              "\n",
-              "      .colab-df-generate:hover {\n",
-              "        background-color: #E2EBFA;\n",
-              "        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
-              "        fill: #174EA6;\n",
-              "      }\n",
-              "\n",
-              "      [theme=dark] .colab-df-generate {\n",
-              "        background-color: #3B4455;\n",
-              "        fill: #D2E3FC;\n",
-              "      }\n",
-              "\n",
-              "      [theme=dark] .colab-df-generate:hover {\n",
-              "        background-color: #434B5C;\n",
-              "        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
-              "        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
-              "        fill: #FFFFFF;\n",
-              "      }\n",
-              "    </style>\n",
-              "    <button class=\"colab-df-generate\" onclick=\"generateWithVariable('df')\"\n",
-              "            title=\"Generate code using this dataframe.\"\n",
-              "            style=\"display:none;\">\n",
-              "\n",
-              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
-              "       width=\"24px\">\n",
-              "    <path d=\"M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z\"/>\n",
-              "  </svg>\n",
-              "    </button>\n",
-              "    <script>\n",
-              "      (() => {\n",
-              "      const buttonEl =\n",
-              "        document.querySelector('#id_ddde9e86-ed84-4fe4-9a27-46a86b081617 button.colab-df-generate');\n",
-              "      buttonEl.style.display =\n",
-              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
-              "\n",
-              "      buttonEl.onclick = () => {\n",
-              "        google.colab.notebook.generateWithVariable('df');\n",
-              "      }\n",
-              "      })();\n",
-              "    </script>\n",
-              "  </div>\n",
-              "\n",
-              "    </div>\n",
-              "  </div>\n"
-            ],
-            "application/vnd.google.colaboratory.intrinsic+json": {
-              "type": "dataframe",
-              "variable_name": "df",
-              "summary": "{\n  \"name\": \"df\",\n  \"rows\": 1344,\n  \"fields\": [\n    {\n      \"column\": \"Year\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 33,\n        \"min\": 1896,\n        \"max\": 2020,\n        \"num_unique_values\": 29,\n        \"samples\": [\n          2016,\n          1972,\n          1956\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Host_country\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 21,\n        \"samples\": [\n          \"Greece\",\n          \"Spain\",\n          \"Soviet Union\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Host_city\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 23,\n        \"samples\": [\n          \"Montreal\",\n          \"Helsinki\",\n          \"Athens\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Country_Name\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 157,\n        \"samples\": [\n          \"Vietnam\",\n          \"Jamaica\",\n          \"Eritrea\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Country_Code\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 155,\n        \"samples\": [\n          \"TAN\",\n          \"GUA\",\n          \"HAI\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Gold\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 8,\n        \"min\": 0,\n        \"max\": 83,\n        \"num_unique_values\": 50,\n        \"samples\": [\n          76,\n          49,\n          32\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Silver\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 7,\n        \"min\": 0,\n        \"max\": 78,\n        \"num_unique_values\": 43,\n        \"samples\": [\n          37,\n          32,\n          26\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Bronze\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 6,\n        \"min\": 0,\n        \"max\": 77,\n        \"num_unique_values\": 42,\n        \"samples\": [\n          32,\n          12,\n          9\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
+# -*- coding: utf-8 -*-
+
+
+#Passo 1 -> Lendo os dados e realizando o tratamento
+
+import pandas as pd
+import plotly.express as px
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+
+# Load the CSV file
+df=pd.read_csv('Summer_olympic_Medals.csv')
+# Replace 'United States' with 'United States of America' in the 'Country_Name' column
+df['Country_Name'] = df['Country_Name'].replace('United States', 'United States of America')
+
+df
+
+#Passo 2: Plotando gráfico de Mapa
+
+# Filtre os dados entre 1992 e 2020
+df = df [( df['Year'] >= 1992) & ( df ['Year'] <= 2020)]
+
+# Calcula o total de medalhas para cada país
+df [ 'Total_Medals' ] = df [ 'Gold' ] + df [ 'Silver' ] + df [ 'Bronze' ]
+df_country_medals = df.groupby('Country_Name')['Total_Medals'].sum().reset_index()
+
+# Gera um mapa gráfico
+map_fig = px.choropleth(df_country_medals,
+                    locations= 'Country_Name' ,      # Coluna DataFrame com nomes de países
+                    locationmode= 'country names' ,
+                    color= 'Total_Medals' ,          # Coluna DataFrame com valores de cor
+                    hover_name= 'Country_Name' ,     # Coluna DataFrame hover info
+                    color_continuous_scale=px.colors.sequential.YlOrRd,   # Defina a escala de cores
+                    title= 'Total de medalhas de 1992 a 2020' )   # Título do enredo
+map_fig.show()
+
+df
+
+#Passo 3 -> Plotando gráfico de área dos 10 paises com maior número de medalhas
+
+# Crie um gráfico de área empilhado para os 10 principais países por contagem total de medalhas
+top_countries = df_country_medals.groupby('Country_Name')['Total_Medals'].sum().nlargest(10).index
+top_countries
+
+df_countries = df.groupby(['Country_Name', 'Year'])['Total_Medals'].sum().reset_index()
+df_countries
+
+df_top_10_countries = df_countries[df_countries['Country_Name'].isin(top_countries)]
+df_top_10_countries
+
+area_fig = px.area(df_top_10_countries,
+                   x= "Year" ,
+                   y= "Total_Medals",
+                   color= "Country_Name",
+                   title= 'Top 10 Países por contagem total de medalhas de 1992 a 2020' )
+
+area_fig.show()
+
+# Crie um aplicativo Dash
+app = dash.Dash(__name__)
+
+
+# Defina o layout
+app.layout = html.Div(children=[
+    dcc.Graph(figure=map_fig),
+    dcc. Graph(figure=area_fig)
+])
+
+# Execute o aplicativo
+if __name__ == '__main__' :
+    app.run( debug = False )  #com debug=True -> fica ativado o modo debug e exibindo as mensagens de erro
+
+#Passo 4 -> Plotando gráfico de Barra com os 10 paises com maior número de medalhas de ouro
+
+# Crie um gráfico de área empilhado para os 10 principais países por contagem total de medalhas
+df_top_countries_gold = df.groupby('Country_Name')['Gold'].sum().nlargest(10).reset_index()
+df_top_countries_gold
+
+# Create a bar chart for the top 10 countries with most gold medals
+
+bar_fig = px.bar(df_top_countries_gold, x='Country_Name', y='Gold', title='Top 10 Countries with Most Gold Medals from 1992 to 2020')
+bar_fig.show()
+
+#Passo 5 -> Estilazando a tela com color_discrete_sequence = gold
+
+bar_fig = px.bar(df_top_countries_gold, x='Country_Name', y='Gold', color_discrete_sequence=['gold'], title='Top 10 Countries with Most Gold Medals from 1992 to 2020')
+bar_fig.show()
+
+# Create a Dash Application
+app = dash.Dash(__name__)
+
+# Define the layout
+app.layout = html.Div([
+    dcc.Graph(figure=map_fig, id='map'),
+    html.Div([
+        dcc.Graph(figure=area_fig, id='area-chart'),
+        dcc.Graph(figure=bar_fig, id='bar-chart')
+    ], style={'display': 'flex'})
+])
+
+
+# Execute o aplicativo
+if __name__ == '__main__' :
+    app.run( debug = False )  #com debug=True -> fica ativado o modo debug e exibindo as mensagens de erro
+
+#Passo 5 -> Estizando a tela com ajuste do mapa dentro do container div
+
+# Create a Dash Application
+app = dash.Dash(__name__)
+
+app.layout = html.Div([
+    dcc.Graph(figure=map_fig, id='map', style={'height': '50vh', 'width': '100%'}),
+    html.Div([
+        dcc.Graph(figure=area_fig, id='area-chart'),
+        dcc.Graph(figure=bar_fig, id='bar-chart')
+    ], style={'display': 'flex'})
+])
+
+# Execute o aplicativo
+if __name__ == '__main__' :
+    app.run( debug = False )  #com debug=True -> fica ativado o modo debug e exibindo as mensagens de erro
+
+"""# Questão 1"""
+
+# Questão 1 - Gere um gráfico de pizza com filtro. Selecione o país, e exiba um gráfico com o total de medalhas de Ouro, prata e bronze.
+
+import pandas as pd
+import plotly.express as px
+import dash
+from dash import dcc, html, Input, Output
+
+# Load the CSV file
+df = pd.read_csv('Summer_olympic_Medals.csv')
+df['Country_Name'] = df['Country_Name'].replace('United States', 'United States of America')
+df = df[(df['Year'] >= 1992) & (df['Year'] <= 2020)]
+
+# Create the Dash app
+app = dash.Dash(__name__)
+
+# Define the layout
+app.layout = html.Div([
+    html.H1("Distribuição de Medalhas"),
+    dcc.Dropdown(
+        id='country-dropdown',
+        options=[{'label': country, 'value': country} for country in df['Country_Name'].unique()],
+        value=df['Country_Name'].unique()[5]  # Default value
+    ),
+    dcc.Graph(id='pie-chart')
+])
+
+# Define the callback to update the pie chart
+@app.callback(
+    Output('pie-chart', 'figure'),
+    Input('country-dropdown', 'value')
+)
+
+def update_pie_chart(selected_country):
+    filtered_df = df[df['Country_Name'] == selected_country]
+    if filtered_df.empty:
+        return px.pie(title=f"No data available for {selected_country}")
+
+    medal_counts = filtered_df.agg({'Gold': 'sum', 'Silver': 'sum', 'Bronze': 'sum'})
+
+    # Cria um dicionário para mapear as medalhas às cores corretas
+    color_map = {'Gold': 'gold', 'Silver': 'silver', 'Bronze': 'brown'}
+
+    fig = px.pie(
+        medal_counts,
+        values=medal_counts.values,
+        names=medal_counts.index,
+        title=f"Distribuição de Medalhas do País {selected_country}",
+        # Usa o color_discrete_map para atribuir as cores corretamente
+        color_discrete_map=color_map
+    )
+    return fig
+
+
+
+# Run the app
+if __name__ == '__main__':
+    app.run(debug=False)
+
+"""# Questão 2"""
+
+#Questão II - Nos 3 gráficos gerados aplique um filtro para que o usuário escolha o tipo de medalha: Ouro, Prata, Bronze ou Todos.
+
+import plotly.express as px
+
+# Supondo que o DataFrame df já esteja carregado e com as colunas 'Gold', 'Silver', 'Bronze', 'Year', 'Country_Name'
+
+# Filtra os dados entre 1992 e 2020
+df = df[(df['Year'] >= 1992) & (df['Year'] <= 2020)]
+
+# Solicita ao usuário o tipo de medalha
+tipo_medalha = input("Escolha o tipo de medalha (Ouro, Prata, Bronze, Todos): ").strip().lower()
+
+# Filtra de acordo com a escolha
+if tipo_medalha == 'ouro':
+    df['Total_Medals'] = df['Gold']
+elif tipo_medalha == 'prata':
+    df['Total_Medals'] = df['Silver']
+elif tipo_medalha == 'bronze':
+    df['Total_Medals'] = df['Bronze']
+elif tipo_medalha == 'todos':
+    df['Total_Medals'] = df['Gold'] + df['Silver'] + df['Bronze']
+else:
+    raise ValueError("Escolha inválida. Opções: Ouro, Prata, Bronze ou Todos.")
+
+# Agrupa por país
+df_country_medals = df.groupby('Country_Name')['Total_Medals'].sum().reset_index()
+
+# Gera o gráfico do mapa
+map_fig = px.choropleth(
+    df_country_medals,
+    locations='Country_Name',
+    locationmode='country names',
+    color='Total_Medals',
+    hover_name='Country_Name',
+    color_continuous_scale=px.colors.sequential.YlOrRd,
+    title=f'Total de medalhas ({tipo_medalha.capitalize()}) de 1992 a 2020'
+)
+
+map_fig.show()
+
+import plotly.express as px
+
+# Suponha que o DataFrame df já está carregado e contém as colunas 'Year', 'Country_Name', 'Gold', 'Silver', 'Bronze'
+
+# Filtra os dados entre 1992 e 2020
+df = df[(df['Year'] >= 1992) & (df['Year'] <= 2020)]
+
+# Solicita ao usuário o tipo de medalha
+tipo_medalha = input("Escolha o tipo de medalha (Ouro, Prata, Bronze, Todas): ").strip().lower()
+
+# Processa a escolha do usuário
+if tipo_medalha == 'ouro':
+    medal_col = 'Gold'
+    cor = 'gold'
+    titulo = 'Top 10 Países com Mais Medalhas de Ouro (1992-2020)'
+elif tipo_medalha == 'prata':
+    medal_col = 'Silver'
+    cor = 'silver'
+    titulo = 'Top 10 Países com Mais Medalhas de Prata (1992-2020)'
+elif tipo_medalha == 'bronze':
+    medal_col = 'Bronze'
+    cor = '#cd7f32'  # Cor bronze hexadecimal
+    titulo = 'Top 10 Países com Mais Medalhas de Bronze (1992-2020)'
+elif tipo_medalha == 'todas':
+    df['Total'] = df['Gold'] + df['Silver'] + df['Bronze']
+    medal_col = 'Total'
+    cor = 'darkcyan'
+    titulo = 'Top 10 Países com Mais Medalhas (1992-2020)'
+else:
+    raise ValueError("Escolha inválida. Opções: Ouro, Prata, Bronze ou Todas.")
+
+# Agrupa e seleciona os top 10 países
+df_medals = df.groupby('Country_Name')[medal_col].sum().reset_index()
+df_top_countries = df_medals.sort_values(by=medal_col, ascending=False).head(10)
+df_top_countries['Medalha'] = tipo_medalha.capitalize()
+
+# Gera o gráfico de barras
+bar_fig = px.bar(
+    df_top_countries,
+    x='Country_Name',
+    y=medal_col,
+    color='Medalha',  # Habilita color_discrete_sequence
+    color_discrete_sequence=[cor],
+    title=titulo
+)
+
+bar_fig.update_layout(showlegend=False)
+bar_fig.show()
+
+import plotly.express as px
+import pandas as pd
+
+# Filtra os dados entre 1992 e 2020
+df = df[(df['Year'] >= 1992) & (df['Year'] <= 2020)]
+
+# Entrada do usuário
+tipo_medalha = input("Escolha o tipo de medalha (Ouro, Prata, Bronze, Todas): ").strip().lower()
+
+# Define coluna e título
+if tipo_medalha == 'ouro':
+    medal_col = 'Gold'
+    titulo = 'Top 10 Países por Medalhas de Ouro (1992-2020)'
+elif tipo_medalha == 'prata':
+    medal_col = 'Silver'
+    titulo = 'Top 10 Países por Medalhas de Prata (1992-2020)'
+elif tipo_medalha == 'bronze':
+    medal_col = 'Bronze'
+    titulo = 'Top 10 Países por Medalhas de Bronze (1992-2020)'
+elif tipo_medalha == 'todas':
+    df['Total_Medals'] = df['Gold'] + df['Silver'] + df['Bronze']
+    medal_col = 'Total_Medals'
+    titulo = 'Top 10 Países por Medalhas Totais (1992-2020)'
+else:
+    raise ValueError("Escolha inválida. Opções: Ouro, Prata, Bronze ou Todas.")
+
+# Encontra os top 10 países
+df_total = df.groupby('Country_Name')[medal_col].sum().reset_index()
+top_10 = df_total.sort_values(by=medal_col, ascending=False).head(10)['Country_Name']
+
+# Filtra o dataframe
+df_top_10 = df[df['Country_Name'].isin(top_10)]
+
+# Recalcula os totais apenas para os top 10 e ordena (menor para maior, para empilhar corretamente)
+country_order = df_top_10.groupby('Country_Name')[medal_col].sum().sort_values().index.tolist()
+
+# Gráfico de área com ordem de empilhamento correta
+area_fig = px.area(
+    df_top_10,
+    x="Year",
+    y=medal_col,
+    color="Country_Name",
+    title=titulo,
+    category_orders={"Country_Name": country_order}  # Ordem explícita para empilhamento
+)
+
+area_fig.show()
+
+"""# Questão 3
+
+"""
+
+import dash
+from dash import dcc, html, Input, Output
+import plotly.express as px
+import pandas as pd
+
+# Suponha que df já esteja carregado e contém colunas: Year, Host_country, Host_city, Country_Name, Gold, Silver, Bronze
+# Exemplo:
+# df = pd.read_csv('medalhas.csv')
+
+# Filtra os dados entre 1992 e 2020
+df = df[(df['Year'] >= 1992) & (df['Year'] <= 2020)]
+
+app = dash.Dash(__name__)
+
+# Layout do app
+app.layout = html.Div([
+    html.H1("Top 10 Países por Medalhas no Ano Olímpico"),
+
+    # Dropdown de ano (com país sede e cidade)
+    dcc.Dropdown(
+        id='year-dropdown',
+        options=[
+            {
+                'label': f"{year} - {df[df['Year'] == year]['Host_country'].iloc[0]} ({df[df['Year'] == year]['Host_city'].iloc[0]})",
+                'value': year
             }
-          },
-          "metadata": {},
-          "execution_count": 8
-        }
-      ],
-      "source": [
-        "df"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "b41a81a3",
-      "metadata": {
-        "id": "b41a81a3",
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 646
-        },
-        "outputId": "4fabad6e-e755-48c7-9598-d2c24aff5ff1"
-      },
-      "outputs": [
-        {
-          "output_type": "stream",
-          "name": "stderr",
-          "text": [
-            "<ipython-input-9-bd12590bd5e9>:7: SettingWithCopyWarning: \n",
-            "A value is trying to be set on a copy of a slice from a DataFrame.\n",
-            "Try using .loc[row_indexer,col_indexer] = value instead\n",
-            "\n",
-            "See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n",
-            "  df [ 'Total_Medals' ] = df [ 'Gold' ] + df [ 'Silver' ] + df [ 'Bronze' ]\n"
-          ]
-        },
-        {
-          "output_type": "display_data",
-          "data": {
-            "text/html": [
-              "<html>\n",
-              "<head><meta charset=\"utf-8\" /></head>\n",
-              "<body>\n",
-              "    <div>            <script src=\"https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG\"></script><script type=\"text/javascript\">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: \"STIX-Web\"}});}</script>                <script type=\"text/javascript\">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>\n",
-              "        <script charset=\"utf-8\" src=\"https://cdn.plot.ly/plotly-2.35.2.min.js\"></script>                <div id=\"2e259b91-3dee-4638-9945-b1129485456a\" class=\"plotly-graph-div\" style=\"height:525px; width:100%;\"></div>            <script type=\"text/javascript\">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById(\"2e259b91-3dee-4638-9945-b1129485456a\")) {                    Plotly.newPlot(                        \"2e259b91-3dee-4638-9945-b1129485456a\",                        [{\"coloraxis\":\"coloraxis\",\"geo\":\"geo\",\"hovertemplate\":\"\\u003cb\\u003e%{hovertext}\\u003c\\u002fb\\u003e\\u003cbr\\u003e\\u003cbr\\u003eCountry_Name=%{location}\\u003cbr\\u003eTotal_Medals=%{z}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"hovertext\":[\"Afghanistan\",\"Algeria\",\"Argentina\",\"Armenia\",\"Australia\",\"Austria\",\"Azerbaijan\",\"Bahamas\",\"Bahrain\",\"Barbados\",\"Belarus\",\"Belgium\",\"Bermuda\",\"Botswana\",\"Brazil\",\"Bulgaria\",\"Burkina Faso\",\"Burundi\",\"Cameroon\",\"Canada\",\"Chile\",\"China\",\"Chinese Taipei\",\"Colombia\",\"Costa Rica\",\"Croatia\",\"Cuba\",\"Cyprus\",\"Czech Republic\",\"Czechoslovakia\",\"Denmark\",\"Dominican Republic\",\"Ecuador\",\"Egypt\",\"Eritrea\",\"Estonia\",\"Ethiopia\",\"Fiji\",\"Finland\",\"France\",\"Gabon\",\"Georgia\",\"Germany\",\"Ghana\",\"Great Britain\",\"Greece\",\"Grenada\",\"Guatemala\",\"Hong Kong\",\"Hungary\",\"Iceland\",\"Independent Olympic Athletes\",\"Independent Olympic Participants\",\"India\",\"Indonesia\",\"Iran\",\"Ireland\",\"Israel\",\"Italy\",\"Ivory Coast\",\"Jamaica\",\"Japan\",\"Jordan\",\"Kazakhstan\",\"Kenya\",\"Kosovo\",\"Kuwait\",\"Kyrgyzstan\",\"Latvia\",\"Lithuania\",\"Macedonia\",\"Malaysia\",\"Mauritius\",\"Mexico\",\"Moldova\",\"Mongolia\",\"Montenegro\",\"Morocco\",\"Mozambique\",\"Namibia\",\"Netherlands\",\"New Zealand\",\"Niger\",\"Nigeria\",\"North Korea\",\"North Macedonia\",\"Norway\",\"Pakistan\",\"Panama\",\"Paraguay\",\"Peru\",\"Philippines\",\"Poland\",\"Portugal\",\"Puerto Rico\",\"Qatar\",\"ROC\",\"Romania\",\"Russia\",\"Samoa\",\"San Marino\",\"Saudi Arabia\",\"Serbia\",\"Serbia and Montenegro\",\"Singapore\",\"Slovakia\",\"Slovenia\",\"South Africa\",\"South Korea\",\"Spain\",\"Sri Lanka\",\"Sudan\",\"Suriname\",\"Sweden\",\"Switzerland\",\"Syria\",\"Tajikistan\",\"Thailand\",\"Togo\",\"Tonga\",\"Trinidad and Tobago\",\"Tunisia\",\"Turkey\",\"Turkmenistan\",\"Uganda\",\"Ukraine\",\"Unified Team\",\"United Arab Emirates\",\"United States of America\",\"Uruguay\",\"Uzbekistan\",\"Venezuela\",\"Vietnam\",\"Yugoslavia\",\"Zambia\",\"Zimbabwe\"],\"locationmode\":\"country names\",\"locations\":[\"Afghanistan\",\"Algeria\",\"Argentina\",\"Armenia\",\"Australia\",\"Austria\",\"Azerbaijan\",\"Bahamas\",\"Bahrain\",\"Barbados\",\"Belarus\",\"Belgium\",\"Bermuda\",\"Botswana\",\"Brazil\",\"Bulgaria\",\"Burkina Faso\",\"Burundi\",\"Cameroon\",\"Canada\",\"Chile\",\"China\",\"Chinese Taipei\",\"Colombia\",\"Costa Rica\",\"Croatia\",\"Cuba\",\"Cyprus\",\"Czech Republic\",\"Czechoslovakia\",\"Denmark\",\"Dominican Republic\",\"Ecuador\",\"Egypt\",\"Eritrea\",\"Estonia\",\"Ethiopia\",\"Fiji\",\"Finland\",\"France\",\"Gabon\",\"Georgia\",\"Germany\",\"Ghana\",\"Great Britain\",\"Greece\",\"Grenada\",\"Guatemala\",\"Hong Kong\",\"Hungary\",\"Iceland\",\"Independent Olympic Athletes\",\"Independent Olympic Participants\",\"India\",\"Indonesia\",\"Iran\",\"Ireland\",\"Israel\",\"Italy\",\"Ivory Coast\",\"Jamaica\",\"Japan\",\"Jordan\",\"Kazakhstan\",\"Kenya\",\"Kosovo\",\"Kuwait\",\"Kyrgyzstan\",\"Latvia\",\"Lithuania\",\"Macedonia\",\"Malaysia\",\"Mauritius\",\"Mexico\",\"Moldova\",\"Mongolia\",\"Montenegro\",\"Morocco\",\"Mozambique\",\"Namibia\",\"Netherlands\",\"New Zealand\",\"Niger\",\"Nigeria\",\"North Korea\",\"North Macedonia\",\"Norway\",\"Pakistan\",\"Panama\",\"Paraguay\",\"Peru\",\"Philippines\",\"Poland\",\"Portugal\",\"Puerto Rico\",\"Qatar\",\"ROC\",\"Romania\",\"Russia\",\"Samoa\",\"San Marino\",\"Saudi Arabia\",\"Serbia\",\"Serbia and Montenegro\",\"Singapore\",\"Slovakia\",\"Slovenia\",\"South Africa\",\"South Korea\",\"Spain\",\"Sri Lanka\",\"Sudan\",\"Suriname\",\"Sweden\",\"Switzerland\",\"Syria\",\"Tajikistan\",\"Thailand\",\"Togo\",\"Tonga\",\"Trinidad and Tobago\",\"Tunisia\",\"Turkey\",\"Turkmenistan\",\"Uganda\",\"Ukraine\",\"Unified Team\",\"United Arab Emirates\",\"United States of America\",\"Uruguay\",\"Uzbekistan\",\"Venezuela\",\"Vietnam\",\"Yugoslavia\",\"Zambia\",\"Zimbabwe\"],\"name\":\"\",\"z\":[2,15,31,18,332,26,49,14,4,1,85,35,1,2,114,73,1,2,4,150,5,574,33,29,3,41,183,1,67,7,68,11,5,20,1,15,48,3,25,290,1,40,416,2,341,54,3,1,9,148,2,2,3,21,36,46,22,13,243,3,67,253,3,72,82,3,3,7,18,26,1,13,1,33,6,19,1,18,2,5,172,85,1,23,43,1,55,1,1,1,1,7,107,15,6,8,71,107,426,1,3,4,24,2,4,32,28,38,217,142,1,1,1,72,53,3,4,32,1,1,12,10,57,1,6,139,112,2,853,1,36,11,5,7,1,7],\"type\":\"choropleth\"}],                        {\"template\":{\"data\":{\"histogram2dcontour\":[{\"type\":\"histogram2dcontour\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"choropleth\":[{\"type\":\"choropleth\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"histogram2d\":[{\"type\":\"histogram2d\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"heatmap\":[{\"type\":\"heatmap\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"heatmapgl\":[{\"type\":\"heatmapgl\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"contourcarpet\":[{\"type\":\"contourcarpet\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"contour\":[{\"type\":\"contour\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"surface\":[{\"type\":\"surface\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"mesh3d\":[{\"type\":\"mesh3d\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"scatter\":[{\"fillpattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2},\"type\":\"scatter\"}],\"parcoords\":[{\"type\":\"parcoords\",\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterpolargl\":[{\"type\":\"scatterpolargl\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"bar\":[{\"error_x\":{\"color\":\"#2a3f5f\"},\"error_y\":{\"color\":\"#2a3f5f\"},\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"bar\"}],\"scattergeo\":[{\"type\":\"scattergeo\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterpolar\":[{\"type\":\"scatterpolar\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"histogram\":[{\"marker\":{\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"histogram\"}],\"scattergl\":[{\"type\":\"scattergl\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatter3d\":[{\"type\":\"scatter3d\",\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scattermapbox\":[{\"type\":\"scattermapbox\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterternary\":[{\"type\":\"scatterternary\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scattercarpet\":[{\"type\":\"scattercarpet\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"carpet\":[{\"aaxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"baxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"type\":\"carpet\"}],\"table\":[{\"cells\":{\"fill\":{\"color\":\"#EBF0F8\"},\"line\":{\"color\":\"white\"}},\"header\":{\"fill\":{\"color\":\"#C8D4E3\"},\"line\":{\"color\":\"white\"}},\"type\":\"table\"}],\"barpolar\":[{\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"barpolar\"}],\"pie\":[{\"automargin\":true,\"type\":\"pie\"}]},\"layout\":{\"autotypenumbers\":\"strict\",\"colorway\":[\"#636efa\",\"#EF553B\",\"#00cc96\",\"#ab63fa\",\"#FFA15A\",\"#19d3f3\",\"#FF6692\",\"#B6E880\",\"#FF97FF\",\"#FECB52\"],\"font\":{\"color\":\"#2a3f5f\"},\"hovermode\":\"closest\",\"hoverlabel\":{\"align\":\"left\"},\"paper_bgcolor\":\"white\",\"plot_bgcolor\":\"#E5ECF6\",\"polar\":{\"bgcolor\":\"#E5ECF6\",\"angularaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"radialaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"ternary\":{\"bgcolor\":\"#E5ECF6\",\"aaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"baxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"caxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"coloraxis\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"colorscale\":{\"sequential\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"sequentialminus\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"diverging\":[[0,\"#8e0152\"],[0.1,\"#c51b7d\"],[0.2,\"#de77ae\"],[0.3,\"#f1b6da\"],[0.4,\"#fde0ef\"],[0.5,\"#f7f7f7\"],[0.6,\"#e6f5d0\"],[0.7,\"#b8e186\"],[0.8,\"#7fbc41\"],[0.9,\"#4d9221\"],[1,\"#276419\"]]},\"xaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"automargin\":true,\"zerolinewidth\":2},\"yaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"automargin\":true,\"zerolinewidth\":2},\"scene\":{\"xaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2},\"yaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2},\"zaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2}},\"shapedefaults\":{\"line\":{\"color\":\"#2a3f5f\"}},\"annotationdefaults\":{\"arrowcolor\":\"#2a3f5f\",\"arrowhead\":0,\"arrowwidth\":1},\"geo\":{\"bgcolor\":\"white\",\"landcolor\":\"#E5ECF6\",\"subunitcolor\":\"white\",\"showland\":true,\"showlakes\":true,\"lakecolor\":\"white\"},\"title\":{\"x\":0.05},\"mapbox\":{\"style\":\"light\"}}},\"geo\":{\"domain\":{\"x\":[0.0,1.0],\"y\":[0.0,1.0]},\"center\":{}},\"coloraxis\":{\"colorbar\":{\"title\":{\"text\":\"Total_Medals\"}},\"colorscale\":[[0.0,\"rgb(255,255,204)\"],[0.125,\"rgb(255,237,160)\"],[0.25,\"rgb(254,217,118)\"],[0.375,\"rgb(254,178,76)\"],[0.5,\"rgb(253,141,60)\"],[0.625,\"rgb(252,78,42)\"],[0.75,\"rgb(227,26,28)\"],[0.875,\"rgb(189,0,38)\"],[1.0,\"rgb(128,0,38)\"]]},\"legend\":{\"tracegroupgap\":0},\"title\":{\"text\":\"Total de medalhas de 1992 a 2020\"}},                        {\"responsive\": true}                    ).then(function(){\n",
-              "                            \n",
-              "var gd = document.getElementById('2e259b91-3dee-4638-9945-b1129485456a');\n",
-              "var x = new MutationObserver(function (mutations, observer) {{\n",
-              "        var display = window.getComputedStyle(gd).display;\n",
-              "        if (!display || display === 'none') {{\n",
-              "            console.log([gd, 'removed!']);\n",
-              "            Plotly.purge(gd);\n",
-              "            observer.disconnect();\n",
-              "        }}\n",
-              "}});\n",
-              "\n",
-              "// Listen for the removal of the full notebook cells\n",
-              "var notebookContainer = gd.closest('#notebook-container');\n",
-              "if (notebookContainer) {{\n",
-              "    x.observe(notebookContainer, {childList: true});\n",
-              "}}\n",
-              "\n",
-              "// Listen for the clearing of the current output cell\n",
-              "var outputEl = gd.closest('.output');\n",
-              "if (outputEl) {{\n",
-              "    x.observe(outputEl, {childList: true});\n",
-              "}}\n",
-              "\n",
-              "                        })                };                            </script>        </div>\n",
-              "</body>\n",
-              "</html>"
-            ]
-          },
-          "metadata": {}
-        }
-      ],
-      "source": [
-        "#Passo 2: Plotando gráfico de Mapa\n",
-        "\n",
-        "# Filtre os dados entre 1992 e 2020\n",
-        "df = df [( df['Year'] >= 1992) & ( df ['Year'] <= 2020)]\n",
-        "\n",
-        "# Calcula o total de medalhas para cada país\n",
-        "df [ 'Total_Medals' ] = df [ 'Gold' ] + df [ 'Silver' ] + df [ 'Bronze' ]\n",
-        "df_country_medals = df.groupby('Country_Name')['Total_Medals'].sum().reset_index()\n",
-        "\n",
-        "# Gera um mapa gráfico\n",
-        "map_fig = px.choropleth(df_country_medals,\n",
-        "                    locations= 'Country_Name' ,      # Coluna DataFrame com nomes de países\n",
-        "                    locationmode= 'country names' ,\n",
-        "                    color= 'Total_Medals' ,          # Coluna DataFrame com valores de cor\n",
-        "                    hover_name= 'Country_Name' ,     # Coluna DataFrame hover info\n",
-        "                    color_continuous_scale=px.colors.sequential.YlOrRd,   # Defina a escala de cores\n",
-        "                    title= 'Total de medalhas de 1992 a 2020' )   # Título do enredo\n",
-        "map_fig.show()"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "26e48321",
-      "metadata": {
-        "id": "26e48321",
-        "outputId": "29ae8b75-8258-4b97-8c60-baf4e61d94fc",
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 423
-        }
-      },
-      "outputs": [
-        {
-          "output_type": "execute_result",
-          "data": {
-            "text/plain": [
-              "      Year Host_country  Host_city Country_Name Country_Code  Gold  Silver  \\\n",
-              "695   1992        Spain  Barcelona       Norway          NOR     2       4   \n",
-              "696   1992        Spain  Barcelona        Kenya          KEN     2       4   \n",
-              "697   1992        Spain  Barcelona    Indonesia          INA     2       2   \n",
-              "698   1992        Spain  Barcelona       Turkey          TUR     2       2   \n",
-              "699   1992        Spain  Barcelona     Bulgaria          BUL     3       7   \n",
-              "...    ...          ...        ...          ...          ...   ...     ...   \n",
-              "1339  2020        Japan      Tokyo         Fiji          FIJ     1       0   \n",
-              "1340  2020        Japan      Tokyo      Estonia          EST     1       0   \n",
-              "1341  2020        Japan      Tokyo       Latvia          LAT     1       0   \n",
-              "1342  2020        Japan      Tokyo      Bermuda          BER     1       0   \n",
-              "1343  2020        Japan      Tokyo     Thailand          THA     1       0   \n",
-              "\n",
-              "      Bronze  Total_Medals  \n",
-              "695        1             7  \n",
-              "696        2             8  \n",
-              "697        1             5  \n",
-              "698        2             6  \n",
-              "699        6            16  \n",
-              "...      ...           ...  \n",
-              "1339       1             2  \n",
-              "1340       1             2  \n",
-              "1341       1             2  \n",
-              "1342       0             1  \n",
-              "1343       1             2  \n",
-              "\n",
-              "[649 rows x 9 columns]"
+            for year in sorted(df['Year'].unique())
+        ],
+        value=sorted(df['Year'].unique())[0]
+    ),
+
+    # Dropdown de tipo de medalha
+    dcc.Dropdown(
+        id='medal-dropdown',
+        options=[
+            {'label': 'Ouro', 'value': 'ouro'},
+            {'label': 'Prata', 'value': 'prata'},
+            {'label': 'Bronze', 'value': 'bronze'},
+            {'label': 'Todas', 'value': 'todas'}
+        ],
+        value='todas'
+    ),
+
+    # Gráfico de barras
+    dcc.Graph(id='bar-chart')
+])
+
+# Callback interativo
+@app.callback(
+    Output('bar-chart', 'figure'),
+    Input('year-dropdown', 'value'),
+    Input('medal-dropdown', 'value')
+)
+def update_bar_chart(selected_year, tipo_medalha):
+    # Filtra dados do ano selecionado
+    year_df = df[df['Year'] == selected_year]
+
+    # Determina coluna e cor com base na medalha
+    if tipo_medalha == 'ouro':
+        medal_col = 'Gold'
+        cor = 'gold'
+        titulo = f"Top 10 Países com Mais Medalhas de Ouro - {selected_year}"
+    elif tipo_medalha == 'prata':
+        medal_col = 'Silver'
+        cor = 'silver'
+        titulo = f"Top 10 Países com Mais Medalhas de Prata - {selected_year}"
+    elif tipo_medalha == 'bronze':
+        medal_col = 'Bronze'
+        cor = '#cd7f32'
+        titulo = f"Top 10 Países com Mais Medalhas de Bronze - {selected_year}"
+    elif tipo_medalha == 'todas':
+        year_df['Total'] = year_df['Gold'] + year_df['Silver'] + year_df['Bronze']
+        medal_col = 'Total'
+        cor = 'darkcyan'
+        titulo = f"Top 10 Países com Mais Medalhas - {selected_year}"
+    else:
+        return px.bar(title="Seleção inválida.")
+
+    # Agrupa e ordena os top 10 países no ano selecionado
+    df_medals = year_df.groupby('Country_Name')[medal_col].sum().reset_index()
+    df_top = df_medals.sort_values(by=medal_col, ascending=False).head(10)
+    df_top['Medalha'] = tipo_medalha.capitalize()
+
+    # Gráfico
+    fig = px.bar(
+        df_top,
+        x='Country_Name',
+        y=medal_col,
+        color='Medalha',
+        color_discrete_sequence=[cor],
+        title=titulo
+    )
+    fig.update_layout(showlegend=False)
+
+    return fig
+
+# Executa o app
+if __name__ == '__main__':
+    app.run(debug=True)
+
+"""# Questão 4"""
+
+import dash
+from dash import dcc, html, Input, Output
+import plotly.express as px
+import pandas as pd
+
+# Carregando o DataFrame
+df = pd.read_csv('Summer_olympic_Medals.csv')
+
+# Pré-processamento dos dados
+df['Country_Name'] = df['Country_Name'].replace('United States', 'United States of America')
+df = df[(df['Year'] >= 1992) & (df['Year'] <= 2020)]
+
+# Inicializando o aplicativo Dash
+app = dash.Dash(__name__)
+
+# Layout do Dashboard
+app.layout = html.Div([
+    html.H1("Dashboard de Medalhas Olímpicas"),
+
+    # Filtros de seleção
+    html.Div([
+        html.Label("Selecione o Ano Olímpico"),
+        dcc.Dropdown(
+            id='year-dropdown',
+            options=[
+                {'label': 'Total de 1992-2020', 'value': 'total_1992_2020'}
+            ] + [{'label': year, 'value': year} for year in sorted(df['Year'].unique())],
+            value='total_1992_2020'  # Valor padrão
+        ),
+        html.Label("Selecione o Tipo de Medalha"),
+        dcc.Dropdown(
+            id='medal-dropdown',
+            options=[
+                {'label': 'Ouro', 'value': 'ouro'},
+                {'label': 'Prata', 'value': 'prata'},
+                {'label': 'Bronze', 'value': 'bronze'},
+                {'label': 'Todas', 'value': 'todas'}
             ],
-            "text/html": [
-              "\n",
-              "  <div id=\"df-fdb25b77-e13b-46eb-a285-c77b84eb2117\" class=\"colab-df-container\">\n",
-              "    <div>\n",
-              "<style scoped>\n",
-              "    .dataframe tbody tr th:only-of-type {\n",
-              "        vertical-align: middle;\n",
-              "    }\n",
-              "\n",
-              "    .dataframe tbody tr th {\n",
-              "        vertical-align: top;\n",
-              "    }\n",
-              "\n",
-              "    .dataframe thead th {\n",
-              "        text-align: right;\n",
-              "    }\n",
-              "</style>\n",
-              "<table border=\"1\" class=\"dataframe\">\n",
-              "  <thead>\n",
-              "    <tr style=\"text-align: right;\">\n",
-              "      <th></th>\n",
-              "      <th>Year</th>\n",
-              "      <th>Host_country</th>\n",
-              "      <th>Host_city</th>\n",
-              "      <th>Country_Name</th>\n",
-              "      <th>Country_Code</th>\n",
-              "      <th>Gold</th>\n",
-              "      <th>Silver</th>\n",
-              "      <th>Bronze</th>\n",
-              "      <th>Total_Medals</th>\n",
-              "    </tr>\n",
-              "  </thead>\n",
-              "  <tbody>\n",
-              "    <tr>\n",
-              "      <th>695</th>\n",
-              "      <td>1992</td>\n",
-              "      <td>Spain</td>\n",
-              "      <td>Barcelona</td>\n",
-              "      <td>Norway</td>\n",
-              "      <td>NOR</td>\n",
-              "      <td>2</td>\n",
-              "      <td>4</td>\n",
-              "      <td>1</td>\n",
-              "      <td>7</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>696</th>\n",
-              "      <td>1992</td>\n",
-              "      <td>Spain</td>\n",
-              "      <td>Barcelona</td>\n",
-              "      <td>Kenya</td>\n",
-              "      <td>KEN</td>\n",
-              "      <td>2</td>\n",
-              "      <td>4</td>\n",
-              "      <td>2</td>\n",
-              "      <td>8</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>697</th>\n",
-              "      <td>1992</td>\n",
-              "      <td>Spain</td>\n",
-              "      <td>Barcelona</td>\n",
-              "      <td>Indonesia</td>\n",
-              "      <td>INA</td>\n",
-              "      <td>2</td>\n",
-              "      <td>2</td>\n",
-              "      <td>1</td>\n",
-              "      <td>5</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>698</th>\n",
-              "      <td>1992</td>\n",
-              "      <td>Spain</td>\n",
-              "      <td>Barcelona</td>\n",
-              "      <td>Turkey</td>\n",
-              "      <td>TUR</td>\n",
-              "      <td>2</td>\n",
-              "      <td>2</td>\n",
-              "      <td>2</td>\n",
-              "      <td>6</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>699</th>\n",
-              "      <td>1992</td>\n",
-              "      <td>Spain</td>\n",
-              "      <td>Barcelona</td>\n",
-              "      <td>Bulgaria</td>\n",
-              "      <td>BUL</td>\n",
-              "      <td>3</td>\n",
-              "      <td>7</td>\n",
-              "      <td>6</td>\n",
-              "      <td>16</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>...</th>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>1339</th>\n",
-              "      <td>2020</td>\n",
-              "      <td>Japan</td>\n",
-              "      <td>Tokyo</td>\n",
-              "      <td>Fiji</td>\n",
-              "      <td>FIJ</td>\n",
-              "      <td>1</td>\n",
-              "      <td>0</td>\n",
-              "      <td>1</td>\n",
-              "      <td>2</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>1340</th>\n",
-              "      <td>2020</td>\n",
-              "      <td>Japan</td>\n",
-              "      <td>Tokyo</td>\n",
-              "      <td>Estonia</td>\n",
-              "      <td>EST</td>\n",
-              "      <td>1</td>\n",
-              "      <td>0</td>\n",
-              "      <td>1</td>\n",
-              "      <td>2</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>1341</th>\n",
-              "      <td>2020</td>\n",
-              "      <td>Japan</td>\n",
-              "      <td>Tokyo</td>\n",
-              "      <td>Latvia</td>\n",
-              "      <td>LAT</td>\n",
-              "      <td>1</td>\n",
-              "      <td>0</td>\n",
-              "      <td>1</td>\n",
-              "      <td>2</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>1342</th>\n",
-              "      <td>2020</td>\n",
-              "      <td>Japan</td>\n",
-              "      <td>Tokyo</td>\n",
-              "      <td>Bermuda</td>\n",
-              "      <td>BER</td>\n",
-              "      <td>1</td>\n",
-              "      <td>0</td>\n",
-              "      <td>0</td>\n",
-              "      <td>1</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>1343</th>\n",
-              "      <td>2020</td>\n",
-              "      <td>Japan</td>\n",
-              "      <td>Tokyo</td>\n",
-              "      <td>Thailand</td>\n",
-              "      <td>THA</td>\n",
-              "      <td>1</td>\n",
-              "      <td>0</td>\n",
-              "      <td>1</td>\n",
-              "      <td>2</td>\n",
-              "    </tr>\n",
-              "  </tbody>\n",
-              "</table>\n",
-              "<p>649 rows × 9 columns</p>\n",
-              "</div>\n",
-              "    <div class=\"colab-df-buttons\">\n",
-              "\n",
-              "  <div class=\"colab-df-container\">\n",
-              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-fdb25b77-e13b-46eb-a285-c77b84eb2117')\"\n",
-              "            title=\"Convert this dataframe to an interactive table.\"\n",
-              "            style=\"display:none;\">\n",
-              "\n",
-              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
-              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
-              "  </svg>\n",
-              "    </button>\n",
-              "\n",
-              "  <style>\n",
-              "    .colab-df-container {\n",
-              "      display:flex;\n",
-              "      gap: 12px;\n",
-              "    }\n",
-              "\n",
-              "    .colab-df-convert {\n",
-              "      background-color: #E8F0FE;\n",
-              "      border: none;\n",
-              "      border-radius: 50%;\n",
-              "      cursor: pointer;\n",
-              "      display: none;\n",
-              "      fill: #1967D2;\n",
-              "      height: 32px;\n",
-              "      padding: 0 0 0 0;\n",
-              "      width: 32px;\n",
-              "    }\n",
-              "\n",
-              "    .colab-df-convert:hover {\n",
-              "      background-color: #E2EBFA;\n",
-              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
-              "      fill: #174EA6;\n",
-              "    }\n",
-              "\n",
-              "    .colab-df-buttons div {\n",
-              "      margin-bottom: 4px;\n",
-              "    }\n",
-              "\n",
-              "    [theme=dark] .colab-df-convert {\n",
-              "      background-color: #3B4455;\n",
-              "      fill: #D2E3FC;\n",
-              "    }\n",
-              "\n",
-              "    [theme=dark] .colab-df-convert:hover {\n",
-              "      background-color: #434B5C;\n",
-              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
-              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
-              "      fill: #FFFFFF;\n",
-              "    }\n",
-              "  </style>\n",
-              "\n",
-              "    <script>\n",
-              "      const buttonEl =\n",
-              "        document.querySelector('#df-fdb25b77-e13b-46eb-a285-c77b84eb2117 button.colab-df-convert');\n",
-              "      buttonEl.style.display =\n",
-              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
-              "\n",
-              "      async function convertToInteractive(key) {\n",
-              "        const element = document.querySelector('#df-fdb25b77-e13b-46eb-a285-c77b84eb2117');\n",
-              "        const dataTable =\n",
-              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
-              "                                                    [key], {});\n",
-              "        if (!dataTable) return;\n",
-              "\n",
-              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
-              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
-              "          + ' to learn more about interactive tables.';\n",
-              "        element.innerHTML = '';\n",
-              "        dataTable['output_type'] = 'display_data';\n",
-              "        await google.colab.output.renderOutput(dataTable, element);\n",
-              "        const docLink = document.createElement('div');\n",
-              "        docLink.innerHTML = docLinkHtml;\n",
-              "        element.appendChild(docLink);\n",
-              "      }\n",
-              "    </script>\n",
-              "  </div>\n",
-              "\n",
-              "\n",
-              "    <div id=\"df-d3168cda-0540-427f-9447-d7edb218f3e1\">\n",
-              "      <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-d3168cda-0540-427f-9447-d7edb218f3e1')\"\n",
-              "                title=\"Suggest charts\"\n",
-              "                style=\"display:none;\">\n",
-              "\n",
-              "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
-              "     width=\"24px\">\n",
-              "    <g>\n",
-              "        <path d=\"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z\"/>\n",
-              "    </g>\n",
-              "</svg>\n",
-              "      </button>\n",
-              "\n",
-              "<style>\n",
-              "  .colab-df-quickchart {\n",
-              "      --bg-color: #E8F0FE;\n",
-              "      --fill-color: #1967D2;\n",
-              "      --hover-bg-color: #E2EBFA;\n",
-              "      --hover-fill-color: #174EA6;\n",
-              "      --disabled-fill-color: #AAA;\n",
-              "      --disabled-bg-color: #DDD;\n",
-              "  }\n",
-              "\n",
-              "  [theme=dark] .colab-df-quickchart {\n",
-              "      --bg-color: #3B4455;\n",
-              "      --fill-color: #D2E3FC;\n",
-              "      --hover-bg-color: #434B5C;\n",
-              "      --hover-fill-color: #FFFFFF;\n",
-              "      --disabled-bg-color: #3B4455;\n",
-              "      --disabled-fill-color: #666;\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-quickchart {\n",
-              "    background-color: var(--bg-color);\n",
-              "    border: none;\n",
-              "    border-radius: 50%;\n",
-              "    cursor: pointer;\n",
-              "    display: none;\n",
-              "    fill: var(--fill-color);\n",
-              "    height: 32px;\n",
-              "    padding: 0;\n",
-              "    width: 32px;\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-quickchart:hover {\n",
-              "    background-color: var(--hover-bg-color);\n",
-              "    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
-              "    fill: var(--button-hover-fill-color);\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-quickchart-complete:disabled,\n",
-              "  .colab-df-quickchart-complete:disabled:hover {\n",
-              "    background-color: var(--disabled-bg-color);\n",
-              "    fill: var(--disabled-fill-color);\n",
-              "    box-shadow: none;\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-spinner {\n",
-              "    border: 2px solid var(--fill-color);\n",
-              "    border-color: transparent;\n",
-              "    border-bottom-color: var(--fill-color);\n",
-              "    animation:\n",
-              "      spin 1s steps(1) infinite;\n",
-              "  }\n",
-              "\n",
-              "  @keyframes spin {\n",
-              "    0% {\n",
-              "      border-color: transparent;\n",
-              "      border-bottom-color: var(--fill-color);\n",
-              "      border-left-color: var(--fill-color);\n",
-              "    }\n",
-              "    20% {\n",
-              "      border-color: transparent;\n",
-              "      border-left-color: var(--fill-color);\n",
-              "      border-top-color: var(--fill-color);\n",
-              "    }\n",
-              "    30% {\n",
-              "      border-color: transparent;\n",
-              "      border-left-color: var(--fill-color);\n",
-              "      border-top-color: var(--fill-color);\n",
-              "      border-right-color: var(--fill-color);\n",
-              "    }\n",
-              "    40% {\n",
-              "      border-color: transparent;\n",
-              "      border-right-color: var(--fill-color);\n",
-              "      border-top-color: var(--fill-color);\n",
-              "    }\n",
-              "    60% {\n",
-              "      border-color: transparent;\n",
-              "      border-right-color: var(--fill-color);\n",
-              "    }\n",
-              "    80% {\n",
-              "      border-color: transparent;\n",
-              "      border-right-color: var(--fill-color);\n",
-              "      border-bottom-color: var(--fill-color);\n",
-              "    }\n",
-              "    90% {\n",
-              "      border-color: transparent;\n",
-              "      border-bottom-color: var(--fill-color);\n",
-              "    }\n",
-              "  }\n",
-              "</style>\n",
-              "\n",
-              "      <script>\n",
-              "        async function quickchart(key) {\n",
-              "          const quickchartButtonEl =\n",
-              "            document.querySelector('#' + key + ' button');\n",
-              "          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.\n",
-              "          quickchartButtonEl.classList.add('colab-df-spinner');\n",
-              "          try {\n",
-              "            const charts = await google.colab.kernel.invokeFunction(\n",
-              "                'suggestCharts', [key], {});\n",
-              "          } catch (error) {\n",
-              "            console.error('Error during call to suggestCharts:', error);\n",
-              "          }\n",
-              "          quickchartButtonEl.classList.remove('colab-df-spinner');\n",
-              "          quickchartButtonEl.classList.add('colab-df-quickchart-complete');\n",
-              "        }\n",
-              "        (() => {\n",
-              "          let quickchartButtonEl =\n",
-              "            document.querySelector('#df-d3168cda-0540-427f-9447-d7edb218f3e1 button');\n",
-              "          quickchartButtonEl.style.display =\n",
-              "            google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
-              "        })();\n",
-              "      </script>\n",
-              "    </div>\n",
-              "\n",
-              "  <div id=\"id_61c41548-0692-45ff-a971-153841a553d6\">\n",
-              "    <style>\n",
-              "      .colab-df-generate {\n",
-              "        background-color: #E8F0FE;\n",
-              "        border: none;\n",
-              "        border-radius: 50%;\n",
-              "        cursor: pointer;\n",
-              "        display: none;\n",
-              "        fill: #1967D2;\n",
-              "        height: 32px;\n",
-              "        padding: 0 0 0 0;\n",
-              "        width: 32px;\n",
-              "      }\n",
-              "\n",
-              "      .colab-df-generate:hover {\n",
-              "        background-color: #E2EBFA;\n",
-              "        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
-              "        fill: #174EA6;\n",
-              "      }\n",
-              "\n",
-              "      [theme=dark] .colab-df-generate {\n",
-              "        background-color: #3B4455;\n",
-              "        fill: #D2E3FC;\n",
-              "      }\n",
-              "\n",
-              "      [theme=dark] .colab-df-generate:hover {\n",
-              "        background-color: #434B5C;\n",
-              "        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
-              "        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
-              "        fill: #FFFFFF;\n",
-              "      }\n",
-              "    </style>\n",
-              "    <button class=\"colab-df-generate\" onclick=\"generateWithVariable('df')\"\n",
-              "            title=\"Generate code using this dataframe.\"\n",
-              "            style=\"display:none;\">\n",
-              "\n",
-              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
-              "       width=\"24px\">\n",
-              "    <path d=\"M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z\"/>\n",
-              "  </svg>\n",
-              "    </button>\n",
-              "    <script>\n",
-              "      (() => {\n",
-              "      const buttonEl =\n",
-              "        document.querySelector('#id_61c41548-0692-45ff-a971-153841a553d6 button.colab-df-generate');\n",
-              "      buttonEl.style.display =\n",
-              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
-              "\n",
-              "      buttonEl.onclick = () => {\n",
-              "        google.colab.notebook.generateWithVariable('df');\n",
-              "      }\n",
-              "      })();\n",
-              "    </script>\n",
-              "  </div>\n",
-              "\n",
-              "    </div>\n",
-              "  </div>\n"
-            ],
-            "application/vnd.google.colaboratory.intrinsic+json": {
-              "type": "dataframe",
-              "variable_name": "df",
-              "summary": "{\n  \"name\": \"df\",\n  \"rows\": 649,\n  \"fields\": [\n    {\n      \"column\": \"Year\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 9,\n        \"min\": 1992,\n        \"max\": 2020,\n        \"num_unique_values\": 8,\n        \"samples\": [\n          1996,\n          2012,\n          1992\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Host_country\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 8,\n        \"samples\": [\n          \"United States\",\n          \"Great Britain\",\n          \"Spain\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Host_city\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 8,\n        \"samples\": [\n          \"Atlanta\",\n          \"London\",\n          \"Barcelona\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Country_Name\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 136,\n        \"samples\": [\n          \"Trinidad and Tobago\",\n          \"Ghana\",\n          \"Namibia\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Country_Code\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 134,\n        \"samples\": [\n          \"SMR\",\n          \"UKR\",\n          \"PAR\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Gold\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 7,\n        \"min\": 0,\n        \"max\": 48,\n        \"num_unique_values\": 36,\n        \"samples\": [\n          22,\n          7,\n          10\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Silver\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 6,\n        \"min\": 0,\n        \"max\": 41,\n        \"num_unique_values\": 34,\n        \"samples\": [\n          11,\n          15,\n          26\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Bronze\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 6,\n        \"min\": 0,\n        \"max\": 38,\n        \"num_unique_values\": 35,\n        \"samples\": [\n          20,\n          28,\n          17\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Total_Medals\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 18,\n        \"min\": 1,\n        \"max\": 121,\n        \"num_unique_values\": 70,\n        \"samples\": [\n          27,\n          7,\n          90\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
-            }
-          },
-          "metadata": {},
-          "execution_count": 10
-        }
-      ],
-      "source": [
-        "df"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "b2aa4374",
-      "metadata": {
-        "id": "b2aa4374",
-        "outputId": "f310d80b-3a92-4e1d-c3ae-0400f7285725",
-        "colab": {
-          "base_uri": "https://localhost:8080/"
-        }
-      },
-      "outputs": [
-        {
-          "output_type": "execute_result",
-          "data": {
-            "text/plain": [
-              "Index(['United States of America', 'China', 'Russia', 'Germany',\n",
-              "       'Great Britain', 'Australia', 'France', 'Japan', 'Italy',\n",
-              "       'South Korea'],\n",
-              "      dtype='object', name='Country_Name')"
-            ]
-          },
-          "metadata": {},
-          "execution_count": 11
-        }
-      ],
-      "source": [
-        "#Passo 3 -> Plotando gráfico de área dos 10 paises com maior número de medalhas\n",
-        "\n",
-        "# Crie um gráfico de área empilhado para os 10 principais países por contagem total de medalhas\n",
-        "top_countries = df_country_medals.groupby('Country_Name')['Total_Medals'].sum().nlargest(10).index\n",
-        "top_countries"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "b6c450e8",
-      "metadata": {
-        "id": "b6c450e8",
-        "outputId": "cd76a315-01a0-4aac-fcf5-4a16ac37d3d5",
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 423
-        }
-      },
-      "outputs": [
-        {
-          "output_type": "execute_result",
-          "data": {
-            "text/plain": [
-              "    Country_Name  Year  Total_Medals\n",
-              "0    Afghanistan  2008             1\n",
-              "1    Afghanistan  2012             1\n",
-              "2        Algeria  1992             2\n",
-              "3        Algeria  1996             3\n",
-              "4        Algeria  2000             5\n",
-              "..           ...   ...           ...\n",
-              "644   Yugoslavia  1996             4\n",
-              "645   Yugoslavia  2000             3\n",
-              "646       Zambia  1996             1\n",
-              "647     Zimbabwe  2004             3\n",
-              "648     Zimbabwe  2008             4\n",
-              "\n",
-              "[649 rows x 3 columns]"
-            ],
-            "text/html": [
-              "\n",
-              "  <div id=\"df-e1019357-58f1-4a22-8b9e-e7017fad4b75\" class=\"colab-df-container\">\n",
-              "    <div>\n",
-              "<style scoped>\n",
-              "    .dataframe tbody tr th:only-of-type {\n",
-              "        vertical-align: middle;\n",
-              "    }\n",
-              "\n",
-              "    .dataframe tbody tr th {\n",
-              "        vertical-align: top;\n",
-              "    }\n",
-              "\n",
-              "    .dataframe thead th {\n",
-              "        text-align: right;\n",
-              "    }\n",
-              "</style>\n",
-              "<table border=\"1\" class=\"dataframe\">\n",
-              "  <thead>\n",
-              "    <tr style=\"text-align: right;\">\n",
-              "      <th></th>\n",
-              "      <th>Country_Name</th>\n",
-              "      <th>Year</th>\n",
-              "      <th>Total_Medals</th>\n",
-              "    </tr>\n",
-              "  </thead>\n",
-              "  <tbody>\n",
-              "    <tr>\n",
-              "      <th>0</th>\n",
-              "      <td>Afghanistan</td>\n",
-              "      <td>2008</td>\n",
-              "      <td>1</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>1</th>\n",
-              "      <td>Afghanistan</td>\n",
-              "      <td>2012</td>\n",
-              "      <td>1</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>2</th>\n",
-              "      <td>Algeria</td>\n",
-              "      <td>1992</td>\n",
-              "      <td>2</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>3</th>\n",
-              "      <td>Algeria</td>\n",
-              "      <td>1996</td>\n",
-              "      <td>3</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>4</th>\n",
-              "      <td>Algeria</td>\n",
-              "      <td>2000</td>\n",
-              "      <td>5</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>...</th>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>644</th>\n",
-              "      <td>Yugoslavia</td>\n",
-              "      <td>1996</td>\n",
-              "      <td>4</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>645</th>\n",
-              "      <td>Yugoslavia</td>\n",
-              "      <td>2000</td>\n",
-              "      <td>3</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>646</th>\n",
-              "      <td>Zambia</td>\n",
-              "      <td>1996</td>\n",
-              "      <td>1</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>647</th>\n",
-              "      <td>Zimbabwe</td>\n",
-              "      <td>2004</td>\n",
-              "      <td>3</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>648</th>\n",
-              "      <td>Zimbabwe</td>\n",
-              "      <td>2008</td>\n",
-              "      <td>4</td>\n",
-              "    </tr>\n",
-              "  </tbody>\n",
-              "</table>\n",
-              "<p>649 rows × 3 columns</p>\n",
-              "</div>\n",
-              "    <div class=\"colab-df-buttons\">\n",
-              "\n",
-              "  <div class=\"colab-df-container\">\n",
-              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-e1019357-58f1-4a22-8b9e-e7017fad4b75')\"\n",
-              "            title=\"Convert this dataframe to an interactive table.\"\n",
-              "            style=\"display:none;\">\n",
-              "\n",
-              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
-              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
-              "  </svg>\n",
-              "    </button>\n",
-              "\n",
-              "  <style>\n",
-              "    .colab-df-container {\n",
-              "      display:flex;\n",
-              "      gap: 12px;\n",
-              "    }\n",
-              "\n",
-              "    .colab-df-convert {\n",
-              "      background-color: #E8F0FE;\n",
-              "      border: none;\n",
-              "      border-radius: 50%;\n",
-              "      cursor: pointer;\n",
-              "      display: none;\n",
-              "      fill: #1967D2;\n",
-              "      height: 32px;\n",
-              "      padding: 0 0 0 0;\n",
-              "      width: 32px;\n",
-              "    }\n",
-              "\n",
-              "    .colab-df-convert:hover {\n",
-              "      background-color: #E2EBFA;\n",
-              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
-              "      fill: #174EA6;\n",
-              "    }\n",
-              "\n",
-              "    .colab-df-buttons div {\n",
-              "      margin-bottom: 4px;\n",
-              "    }\n",
-              "\n",
-              "    [theme=dark] .colab-df-convert {\n",
-              "      background-color: #3B4455;\n",
-              "      fill: #D2E3FC;\n",
-              "    }\n",
-              "\n",
-              "    [theme=dark] .colab-df-convert:hover {\n",
-              "      background-color: #434B5C;\n",
-              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
-              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
-              "      fill: #FFFFFF;\n",
-              "    }\n",
-              "  </style>\n",
-              "\n",
-              "    <script>\n",
-              "      const buttonEl =\n",
-              "        document.querySelector('#df-e1019357-58f1-4a22-8b9e-e7017fad4b75 button.colab-df-convert');\n",
-              "      buttonEl.style.display =\n",
-              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
-              "\n",
-              "      async function convertToInteractive(key) {\n",
-              "        const element = document.querySelector('#df-e1019357-58f1-4a22-8b9e-e7017fad4b75');\n",
-              "        const dataTable =\n",
-              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
-              "                                                    [key], {});\n",
-              "        if (!dataTable) return;\n",
-              "\n",
-              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
-              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
-              "          + ' to learn more about interactive tables.';\n",
-              "        element.innerHTML = '';\n",
-              "        dataTable['output_type'] = 'display_data';\n",
-              "        await google.colab.output.renderOutput(dataTable, element);\n",
-              "        const docLink = document.createElement('div');\n",
-              "        docLink.innerHTML = docLinkHtml;\n",
-              "        element.appendChild(docLink);\n",
-              "      }\n",
-              "    </script>\n",
-              "  </div>\n",
-              "\n",
-              "\n",
-              "    <div id=\"df-9ffffed3-fe7c-4269-8e52-e1954c9f5f66\">\n",
-              "      <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-9ffffed3-fe7c-4269-8e52-e1954c9f5f66')\"\n",
-              "                title=\"Suggest charts\"\n",
-              "                style=\"display:none;\">\n",
-              "\n",
-              "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
-              "     width=\"24px\">\n",
-              "    <g>\n",
-              "        <path d=\"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z\"/>\n",
-              "    </g>\n",
-              "</svg>\n",
-              "      </button>\n",
-              "\n",
-              "<style>\n",
-              "  .colab-df-quickchart {\n",
-              "      --bg-color: #E8F0FE;\n",
-              "      --fill-color: #1967D2;\n",
-              "      --hover-bg-color: #E2EBFA;\n",
-              "      --hover-fill-color: #174EA6;\n",
-              "      --disabled-fill-color: #AAA;\n",
-              "      --disabled-bg-color: #DDD;\n",
-              "  }\n",
-              "\n",
-              "  [theme=dark] .colab-df-quickchart {\n",
-              "      --bg-color: #3B4455;\n",
-              "      --fill-color: #D2E3FC;\n",
-              "      --hover-bg-color: #434B5C;\n",
-              "      --hover-fill-color: #FFFFFF;\n",
-              "      --disabled-bg-color: #3B4455;\n",
-              "      --disabled-fill-color: #666;\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-quickchart {\n",
-              "    background-color: var(--bg-color);\n",
-              "    border: none;\n",
-              "    border-radius: 50%;\n",
-              "    cursor: pointer;\n",
-              "    display: none;\n",
-              "    fill: var(--fill-color);\n",
-              "    height: 32px;\n",
-              "    padding: 0;\n",
-              "    width: 32px;\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-quickchart:hover {\n",
-              "    background-color: var(--hover-bg-color);\n",
-              "    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
-              "    fill: var(--button-hover-fill-color);\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-quickchart-complete:disabled,\n",
-              "  .colab-df-quickchart-complete:disabled:hover {\n",
-              "    background-color: var(--disabled-bg-color);\n",
-              "    fill: var(--disabled-fill-color);\n",
-              "    box-shadow: none;\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-spinner {\n",
-              "    border: 2px solid var(--fill-color);\n",
-              "    border-color: transparent;\n",
-              "    border-bottom-color: var(--fill-color);\n",
-              "    animation:\n",
-              "      spin 1s steps(1) infinite;\n",
-              "  }\n",
-              "\n",
-              "  @keyframes spin {\n",
-              "    0% {\n",
-              "      border-color: transparent;\n",
-              "      border-bottom-color: var(--fill-color);\n",
-              "      border-left-color: var(--fill-color);\n",
-              "    }\n",
-              "    20% {\n",
-              "      border-color: transparent;\n",
-              "      border-left-color: var(--fill-color);\n",
-              "      border-top-color: var(--fill-color);\n",
-              "    }\n",
-              "    30% {\n",
-              "      border-color: transparent;\n",
-              "      border-left-color: var(--fill-color);\n",
-              "      border-top-color: var(--fill-color);\n",
-              "      border-right-color: var(--fill-color);\n",
-              "    }\n",
-              "    40% {\n",
-              "      border-color: transparent;\n",
-              "      border-right-color: var(--fill-color);\n",
-              "      border-top-color: var(--fill-color);\n",
-              "    }\n",
-              "    60% {\n",
-              "      border-color: transparent;\n",
-              "      border-right-color: var(--fill-color);\n",
-              "    }\n",
-              "    80% {\n",
-              "      border-color: transparent;\n",
-              "      border-right-color: var(--fill-color);\n",
-              "      border-bottom-color: var(--fill-color);\n",
-              "    }\n",
-              "    90% {\n",
-              "      border-color: transparent;\n",
-              "      border-bottom-color: var(--fill-color);\n",
-              "    }\n",
-              "  }\n",
-              "</style>\n",
-              "\n",
-              "      <script>\n",
-              "        async function quickchart(key) {\n",
-              "          const quickchartButtonEl =\n",
-              "            document.querySelector('#' + key + ' button');\n",
-              "          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.\n",
-              "          quickchartButtonEl.classList.add('colab-df-spinner');\n",
-              "          try {\n",
-              "            const charts = await google.colab.kernel.invokeFunction(\n",
-              "                'suggestCharts', [key], {});\n",
-              "          } catch (error) {\n",
-              "            console.error('Error during call to suggestCharts:', error);\n",
-              "          }\n",
-              "          quickchartButtonEl.classList.remove('colab-df-spinner');\n",
-              "          quickchartButtonEl.classList.add('colab-df-quickchart-complete');\n",
-              "        }\n",
-              "        (() => {\n",
-              "          let quickchartButtonEl =\n",
-              "            document.querySelector('#df-9ffffed3-fe7c-4269-8e52-e1954c9f5f66 button');\n",
-              "          quickchartButtonEl.style.display =\n",
-              "            google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
-              "        })();\n",
-              "      </script>\n",
-              "    </div>\n",
-              "\n",
-              "  <div id=\"id_c6f9c089-8ebe-4725-95df-d8f5e50fcf12\">\n",
-              "    <style>\n",
-              "      .colab-df-generate {\n",
-              "        background-color: #E8F0FE;\n",
-              "        border: none;\n",
-              "        border-radius: 50%;\n",
-              "        cursor: pointer;\n",
-              "        display: none;\n",
-              "        fill: #1967D2;\n",
-              "        height: 32px;\n",
-              "        padding: 0 0 0 0;\n",
-              "        width: 32px;\n",
-              "      }\n",
-              "\n",
-              "      .colab-df-generate:hover {\n",
-              "        background-color: #E2EBFA;\n",
-              "        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
-              "        fill: #174EA6;\n",
-              "      }\n",
-              "\n",
-              "      [theme=dark] .colab-df-generate {\n",
-              "        background-color: #3B4455;\n",
-              "        fill: #D2E3FC;\n",
-              "      }\n",
-              "\n",
-              "      [theme=dark] .colab-df-generate:hover {\n",
-              "        background-color: #434B5C;\n",
-              "        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
-              "        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
-              "        fill: #FFFFFF;\n",
-              "      }\n",
-              "    </style>\n",
-              "    <button class=\"colab-df-generate\" onclick=\"generateWithVariable('df_countries')\"\n",
-              "            title=\"Generate code using this dataframe.\"\n",
-              "            style=\"display:none;\">\n",
-              "\n",
-              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
-              "       width=\"24px\">\n",
-              "    <path d=\"M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z\"/>\n",
-              "  </svg>\n",
-              "    </button>\n",
-              "    <script>\n",
-              "      (() => {\n",
-              "      const buttonEl =\n",
-              "        document.querySelector('#id_c6f9c089-8ebe-4725-95df-d8f5e50fcf12 button.colab-df-generate');\n",
-              "      buttonEl.style.display =\n",
-              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
-              "\n",
-              "      buttonEl.onclick = () => {\n",
-              "        google.colab.notebook.generateWithVariable('df_countries');\n",
-              "      }\n",
-              "      })();\n",
-              "    </script>\n",
-              "  </div>\n",
-              "\n",
-              "    </div>\n",
-              "  </div>\n"
-            ],
-            "application/vnd.google.colaboratory.intrinsic+json": {
-              "type": "dataframe",
-              "variable_name": "df_countries",
-              "summary": "{\n  \"name\": \"df_countries\",\n  \"rows\": 649,\n  \"fields\": [\n    {\n      \"column\": \"Country_Name\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 136,\n        \"samples\": [\n          \"Mexico\",\n          \"Greece\",\n          \"Jamaica\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Year\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 9,\n        \"min\": 1992,\n        \"max\": 2020,\n        \"num_unique_values\": 8,\n        \"samples\": [\n          2012,\n          2016,\n          2008\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Total_Medals\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 18,\n        \"min\": 1,\n        \"max\": 121,\n        \"num_unique_values\": 70,\n        \"samples\": [\n          19,\n          1,\n          28\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
-            }
-          },
-          "metadata": {},
-          "execution_count": 12
-        }
-      ],
-      "source": [
-        "df_countries = df.groupby(['Country_Name', 'Year'])['Total_Medals'].sum().reset_index()\n",
-        "df_countries"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "3d2181b0",
-      "metadata": {
-        "id": "3d2181b0",
-        "outputId": "b521279d-7dce-4cde-ac1a-0bf7e6c699cb",
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 423
-        }
-      },
-      "outputs": [
-        {
-          "output_type": "execute_result",
-          "data": {
-            "text/plain": [
-              "                 Country_Name  Year  Total_Medals\n",
-              "22                  Australia  1992            27\n",
-              "23                  Australia  1996            41\n",
-              "24                  Australia  2000            58\n",
-              "25                  Australia  2004            50\n",
-              "26                  Australia  2008            46\n",
-              "..                        ...   ...           ...\n",
-              "622  United States of America  2004           101\n",
-              "623  United States of America  2008           112\n",
-              "624  United States of America  2012           104\n",
-              "625  United States of America  2016           121\n",
-              "626  United States of America  2020           113\n",
-              "\n",
-              "[78 rows x 3 columns]"
-            ],
-            "text/html": [
-              "\n",
-              "  <div id=\"df-d53d73e5-975c-482e-9aac-66600d403d6c\" class=\"colab-df-container\">\n",
-              "    <div>\n",
-              "<style scoped>\n",
-              "    .dataframe tbody tr th:only-of-type {\n",
-              "        vertical-align: middle;\n",
-              "    }\n",
-              "\n",
-              "    .dataframe tbody tr th {\n",
-              "        vertical-align: top;\n",
-              "    }\n",
-              "\n",
-              "    .dataframe thead th {\n",
-              "        text-align: right;\n",
-              "    }\n",
-              "</style>\n",
-              "<table border=\"1\" class=\"dataframe\">\n",
-              "  <thead>\n",
-              "    <tr style=\"text-align: right;\">\n",
-              "      <th></th>\n",
-              "      <th>Country_Name</th>\n",
-              "      <th>Year</th>\n",
-              "      <th>Total_Medals</th>\n",
-              "    </tr>\n",
-              "  </thead>\n",
-              "  <tbody>\n",
-              "    <tr>\n",
-              "      <th>22</th>\n",
-              "      <td>Australia</td>\n",
-              "      <td>1992</td>\n",
-              "      <td>27</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>23</th>\n",
-              "      <td>Australia</td>\n",
-              "      <td>1996</td>\n",
-              "      <td>41</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>24</th>\n",
-              "      <td>Australia</td>\n",
-              "      <td>2000</td>\n",
-              "      <td>58</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>25</th>\n",
-              "      <td>Australia</td>\n",
-              "      <td>2004</td>\n",
-              "      <td>50</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>26</th>\n",
-              "      <td>Australia</td>\n",
-              "      <td>2008</td>\n",
-              "      <td>46</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>...</th>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "      <td>...</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>622</th>\n",
-              "      <td>United States of America</td>\n",
-              "      <td>2004</td>\n",
-              "      <td>101</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>623</th>\n",
-              "      <td>United States of America</td>\n",
-              "      <td>2008</td>\n",
-              "      <td>112</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>624</th>\n",
-              "      <td>United States of America</td>\n",
-              "      <td>2012</td>\n",
-              "      <td>104</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>625</th>\n",
-              "      <td>United States of America</td>\n",
-              "      <td>2016</td>\n",
-              "      <td>121</td>\n",
-              "    </tr>\n",
-              "    <tr>\n",
-              "      <th>626</th>\n",
-              "      <td>United States of America</td>\n",
-              "      <td>2020</td>\n",
-              "      <td>113</td>\n",
-              "    </tr>\n",
-              "  </tbody>\n",
-              "</table>\n",
-              "<p>78 rows × 3 columns</p>\n",
-              "</div>\n",
-              "    <div class=\"colab-df-buttons\">\n",
-              "\n",
-              "  <div class=\"colab-df-container\">\n",
-              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-d53d73e5-975c-482e-9aac-66600d403d6c')\"\n",
-              "            title=\"Convert this dataframe to an interactive table.\"\n",
-              "            style=\"display:none;\">\n",
-              "\n",
-              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
-              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
-              "  </svg>\n",
-              "    </button>\n",
-              "\n",
-              "  <style>\n",
-              "    .colab-df-container {\n",
-              "      display:flex;\n",
-              "      gap: 12px;\n",
-              "    }\n",
-              "\n",
-              "    .colab-df-convert {\n",
-              "      background-color: #E8F0FE;\n",
-              "      border: none;\n",
-              "      border-radius: 50%;\n",
-              "      cursor: pointer;\n",
-              "      display: none;\n",
-              "      fill: #1967D2;\n",
-              "      height: 32px;\n",
-              "      padding: 0 0 0 0;\n",
-              "      width: 32px;\n",
-              "    }\n",
-              "\n",
-              "    .colab-df-convert:hover {\n",
-              "      background-color: #E2EBFA;\n",
-              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
-              "      fill: #174EA6;\n",
-              "    }\n",
-              "\n",
-              "    .colab-df-buttons div {\n",
-              "      margin-bottom: 4px;\n",
-              "    }\n",
-              "\n",
-              "    [theme=dark] .colab-df-convert {\n",
-              "      background-color: #3B4455;\n",
-              "      fill: #D2E3FC;\n",
-              "    }\n",
-              "\n",
-              "    [theme=dark] .colab-df-convert:hover {\n",
-              "      background-color: #434B5C;\n",
-              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
-              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
-              "      fill: #FFFFFF;\n",
-              "    }\n",
-              "  </style>\n",
-              "\n",
-              "    <script>\n",
-              "      const buttonEl =\n",
-              "        document.querySelector('#df-d53d73e5-975c-482e-9aac-66600d403d6c button.colab-df-convert');\n",
-              "      buttonEl.style.display =\n",
-              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
-              "\n",
-              "      async function convertToInteractive(key) {\n",
-              "        const element = document.querySelector('#df-d53d73e5-975c-482e-9aac-66600d403d6c');\n",
-              "        const dataTable =\n",
-              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
-              "                                                    [key], {});\n",
-              "        if (!dataTable) return;\n",
-              "\n",
-              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
-              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
-              "          + ' to learn more about interactive tables.';\n",
-              "        element.innerHTML = '';\n",
-              "        dataTable['output_type'] = 'display_data';\n",
-              "        await google.colab.output.renderOutput(dataTable, element);\n",
-              "        const docLink = document.createElement('div');\n",
-              "        docLink.innerHTML = docLinkHtml;\n",
-              "        element.appendChild(docLink);\n",
-              "      }\n",
-              "    </script>\n",
-              "  </div>\n",
-              "\n",
-              "\n",
-              "    <div id=\"df-0bb0edf4-89eb-48b0-8210-7694b96926ef\">\n",
-              "      <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-0bb0edf4-89eb-48b0-8210-7694b96926ef')\"\n",
-              "                title=\"Suggest charts\"\n",
-              "                style=\"display:none;\">\n",
-              "\n",
-              "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
-              "     width=\"24px\">\n",
-              "    <g>\n",
-              "        <path d=\"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z\"/>\n",
-              "    </g>\n",
-              "</svg>\n",
-              "      </button>\n",
-              "\n",
-              "<style>\n",
-              "  .colab-df-quickchart {\n",
-              "      --bg-color: #E8F0FE;\n",
-              "      --fill-color: #1967D2;\n",
-              "      --hover-bg-color: #E2EBFA;\n",
-              "      --hover-fill-color: #174EA6;\n",
-              "      --disabled-fill-color: #AAA;\n",
-              "      --disabled-bg-color: #DDD;\n",
-              "  }\n",
-              "\n",
-              "  [theme=dark] .colab-df-quickchart {\n",
-              "      --bg-color: #3B4455;\n",
-              "      --fill-color: #D2E3FC;\n",
-              "      --hover-bg-color: #434B5C;\n",
-              "      --hover-fill-color: #FFFFFF;\n",
-              "      --disabled-bg-color: #3B4455;\n",
-              "      --disabled-fill-color: #666;\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-quickchart {\n",
-              "    background-color: var(--bg-color);\n",
-              "    border: none;\n",
-              "    border-radius: 50%;\n",
-              "    cursor: pointer;\n",
-              "    display: none;\n",
-              "    fill: var(--fill-color);\n",
-              "    height: 32px;\n",
-              "    padding: 0;\n",
-              "    width: 32px;\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-quickchart:hover {\n",
-              "    background-color: var(--hover-bg-color);\n",
-              "    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
-              "    fill: var(--button-hover-fill-color);\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-quickchart-complete:disabled,\n",
-              "  .colab-df-quickchart-complete:disabled:hover {\n",
-              "    background-color: var(--disabled-bg-color);\n",
-              "    fill: var(--disabled-fill-color);\n",
-              "    box-shadow: none;\n",
-              "  }\n",
-              "\n",
-              "  .colab-df-spinner {\n",
-              "    border: 2px solid var(--fill-color);\n",
-              "    border-color: transparent;\n",
-              "    border-bottom-color: var(--fill-color);\n",
-              "    animation:\n",
-              "      spin 1s steps(1) infinite;\n",
-              "  }\n",
-              "\n",
-              "  @keyframes spin {\n",
-              "    0% {\n",
-              "      border-color: transparent;\n",
-              "      border-bottom-color: var(--fill-color);\n",
-              "      border-left-color: var(--fill-color);\n",
-              "    }\n",
-              "    20% {\n",
-              "      border-color: transparent;\n",
-              "      border-left-color: var(--fill-color);\n",
-              "      border-top-color: var(--fill-color);\n",
-              "    }\n",
-              "    30% {\n",
-              "      border-color: transparent;\n",
-              "      border-left-color: var(--fill-color);\n",
-              "      border-top-color: var(--fill-color);\n",
-              "      border-right-color: var(--fill-color);\n",
-              "    }\n",
-              "    40% {\n",
-              "      border-color: transparent;\n",
-              "      border-right-color: var(--fill-color);\n",
-              "      border-top-color: var(--fill-color);\n",
-              "    }\n",
-              "    60% {\n",
-              "      border-color: transparent;\n",
-              "      border-right-color: var(--fill-color);\n",
-              "    }\n",
-              "    80% {\n",
-              "      border-color: transparent;\n",
-              "      border-right-color: var(--fill-color);\n",
-              "      border-bottom-color: var(--fill-color);\n",
-              "    }\n",
-              "    90% {\n",
-              "      border-color: transparent;\n",
-              "      border-bottom-color: var(--fill-color);\n",
-              "    }\n",
-              "  }\n",
-              "</style>\n",
-              "\n",
-              "      <script>\n",
-              "        async function quickchart(key) {\n",
-              "          const quickchartButtonEl =\n",
-              "            document.querySelector('#' + key + ' button');\n",
-              "          quickchartButtonEl.disabled = true;  // To prevent multiple clicks.\n",
-              "          quickchartButtonEl.classList.add('colab-df-spinner');\n",
-              "          try {\n",
-              "            const charts = await google.colab.kernel.invokeFunction(\n",
-              "                'suggestCharts', [key], {});\n",
-              "          } catch (error) {\n",
-              "            console.error('Error during call to suggestCharts:', error);\n",
-              "          }\n",
-              "          quickchartButtonEl.classList.remove('colab-df-spinner');\n",
-              "          quickchartButtonEl.classList.add('colab-df-quickchart-complete');\n",
-              "        }\n",
-              "        (() => {\n",
-              "          let quickchartButtonEl =\n",
-              "            document.querySelector('#df-0bb0edf4-89eb-48b0-8210-7694b96926ef button');\n",
-              "          quickchartButtonEl.style.display =\n",
-              "            google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
-              "        })();\n",
-              "      </script>\n",
-              "    </div>\n",
-              "\n",
-              "  <div id=\"id_dcdb0c51-a59d-40e7-96ff-541ee118862f\">\n",
-              "    <style>\n",
-              "      .colab-df-generate {\n",
-              "        background-color: #E8F0FE;\n",
-              "        border: none;\n",
-              "        border-radius: 50%;\n",
-              "        cursor: pointer;\n",
-              "        display: none;\n",
-              "        fill: #1967D2;\n",
-              "        height: 32px;\n",
-              "        padding: 0 0 0 0;\n",
-              "        width: 32px;\n",
-              "      }\n",
-              "\n",
-              "      .colab-df-generate:hover {\n",
-              "        background-color: #E2EBFA;\n",
-              "        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
-              "        fill: #174EA6;\n",
-              "      }\n",
-              "\n",
-              "      [theme=dark] .colab-df-generate {\n",
-              "        background-color: #3B4455;\n",
-              "        fill: #D2E3FC;\n",
-              "      }\n",
-              "\n",
-              "      [theme=dark] .colab-df-generate:hover {\n",
-              "        background-color: #434B5C;\n",
-              "        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
-              "        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
-              "        fill: #FFFFFF;\n",
-              "      }\n",
-              "    </style>\n",
-              "    <button class=\"colab-df-generate\" onclick=\"generateWithVariable('df_top_10_countries')\"\n",
-              "            title=\"Generate code using this dataframe.\"\n",
-              "            style=\"display:none;\">\n",
-              "\n",
-              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
-              "       width=\"24px\">\n",
-              "    <path d=\"M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z\"/>\n",
-              "  </svg>\n",
-              "    </button>\n",
-              "    <script>\n",
-              "      (() => {\n",
-              "      const buttonEl =\n",
-              "        document.querySelector('#id_dcdb0c51-a59d-40e7-96ff-541ee118862f button.colab-df-generate');\n",
-              "      buttonEl.style.display =\n",
-              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
-              "\n",
-              "      buttonEl.onclick = () => {\n",
-              "        google.colab.notebook.generateWithVariable('df_top_10_countries');\n",
-              "      }\n",
-              "      })();\n",
-              "    </script>\n",
-              "  </div>\n",
-              "\n",
-              "    </div>\n",
-              "  </div>\n"
-            ],
-            "application/vnd.google.colaboratory.intrinsic+json": {
-              "type": "dataframe",
-              "variable_name": "df_top_10_countries",
-              "summary": "{\n  \"name\": \"df_top_10_countries\",\n  \"rows\": 78,\n  \"fields\": [\n    {\n      \"column\": \"Country_Name\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 10,\n        \"samples\": [\n          \"South Korea\",\n          \"China\",\n          \"Italy\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Year\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 9,\n        \"min\": 1992,\n        \"max\": 2020,\n        \"num_unique_values\": 8,\n        \"samples\": [\n          1996,\n          2012,\n          1992\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"Total_Medals\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 27,\n        \"min\": 14,\n        \"max\": 121,\n        \"num_unique_values\": 49,\n        \"samples\": [\n          37,\n          112,\n          121\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
-            }
-          },
-          "metadata": {},
-          "execution_count": 13
-        }
-      ],
-      "source": [
-        "df_top_10_countries = df_countries[df_countries['Country_Name'].isin(top_countries)]\n",
-        "df_top_10_countries"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "1dc42504",
-      "metadata": {
-        "id": "1dc42504",
-        "outputId": "04c2d240-4555-4d42-997c-faa20554e8b4",
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 542
-        }
-      },
-      "outputs": [
-        {
-          "output_type": "display_data",
-          "data": {
-            "text/html": [
-              "<html>\n",
-              "<head><meta charset=\"utf-8\" /></head>\n",
-              "<body>\n",
-              "    <div>            <script src=\"https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG\"></script><script type=\"text/javascript\">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: \"STIX-Web\"}});}</script>                <script type=\"text/javascript\">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>\n",
-              "        <script charset=\"utf-8\" src=\"https://cdn.plot.ly/plotly-2.35.2.min.js\"></script>                <div id=\"76058863-67da-46b0-94a8-24e8210ed0ec\" class=\"plotly-graph-div\" style=\"height:525px; width:100%;\"></div>            <script type=\"text/javascript\">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById(\"76058863-67da-46b0-94a8-24e8210ed0ec\")) {                    Plotly.newPlot(                        \"76058863-67da-46b0-94a8-24e8210ed0ec\",                        [{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=Australia\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eTotal_Medals=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Australia\",\"line\":{\"color\":\"#636efa\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"Australia\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[27,41,58,50,46,35,29,46],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=China\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eTotal_Medals=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"China\",\"line\":{\"color\":\"#EF553B\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"China\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[54,50,58,63,100,91,70,88],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=France\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eTotal_Medals=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"France\",\"line\":{\"color\":\"#00cc96\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"France\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[29,37,38,33,43,35,42,33],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=Germany\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eTotal_Medals=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Germany\",\"line\":{\"color\":\"#ab63fa\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"Germany\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[82,65,56,49,41,44,42,37],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=Great Britain\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eTotal_Medals=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Great Britain\",\"line\":{\"color\":\"#FFA15A\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"Great Britain\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[20,15,28,30,51,65,67,65],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=Italy\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eTotal_Medals=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Italy\",\"line\":{\"color\":\"#19d3f3\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"Italy\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[19,35,34,32,27,28,28,40],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=Japan\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eTotal_Medals=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Japan\",\"line\":{\"color\":\"#FF6692\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"Japan\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[22,14,18,37,25,38,41,58],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=Russia\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eTotal_Medals=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Russia\",\"line\":{\"color\":\"#B6E880\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"Russia\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1996,2000,2004,2008,2012,2016],\"xaxis\":\"x\",\"y\":[63,89,90,60,68,56],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=South Korea\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eTotal_Medals=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"South Korea\",\"line\":{\"color\":\"#FF97FF\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"South Korea\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[29,27,28,30,32,30,21,20],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=United States of America\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eTotal_Medals=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"United States of America\",\"line\":{\"color\":\"#FECB52\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"United States of America\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[108,101,93,101,112,104,121,113],\"yaxis\":\"y\",\"type\":\"scatter\"}],                        {\"template\":{\"data\":{\"histogram2dcontour\":[{\"type\":\"histogram2dcontour\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"choropleth\":[{\"type\":\"choropleth\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"histogram2d\":[{\"type\":\"histogram2d\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"heatmap\":[{\"type\":\"heatmap\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"heatmapgl\":[{\"type\":\"heatmapgl\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"contourcarpet\":[{\"type\":\"contourcarpet\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"contour\":[{\"type\":\"contour\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"surface\":[{\"type\":\"surface\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"mesh3d\":[{\"type\":\"mesh3d\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"scatter\":[{\"fillpattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2},\"type\":\"scatter\"}],\"parcoords\":[{\"type\":\"parcoords\",\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterpolargl\":[{\"type\":\"scatterpolargl\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"bar\":[{\"error_x\":{\"color\":\"#2a3f5f\"},\"error_y\":{\"color\":\"#2a3f5f\"},\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"bar\"}],\"scattergeo\":[{\"type\":\"scattergeo\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterpolar\":[{\"type\":\"scatterpolar\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"histogram\":[{\"marker\":{\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"histogram\"}],\"scattergl\":[{\"type\":\"scattergl\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatter3d\":[{\"type\":\"scatter3d\",\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scattermapbox\":[{\"type\":\"scattermapbox\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterternary\":[{\"type\":\"scatterternary\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scattercarpet\":[{\"type\":\"scattercarpet\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"carpet\":[{\"aaxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"baxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"type\":\"carpet\"}],\"table\":[{\"cells\":{\"fill\":{\"color\":\"#EBF0F8\"},\"line\":{\"color\":\"white\"}},\"header\":{\"fill\":{\"color\":\"#C8D4E3\"},\"line\":{\"color\":\"white\"}},\"type\":\"table\"}],\"barpolar\":[{\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"barpolar\"}],\"pie\":[{\"automargin\":true,\"type\":\"pie\"}]},\"layout\":{\"autotypenumbers\":\"strict\",\"colorway\":[\"#636efa\",\"#EF553B\",\"#00cc96\",\"#ab63fa\",\"#FFA15A\",\"#19d3f3\",\"#FF6692\",\"#B6E880\",\"#FF97FF\",\"#FECB52\"],\"font\":{\"color\":\"#2a3f5f\"},\"hovermode\":\"closest\",\"hoverlabel\":{\"align\":\"left\"},\"paper_bgcolor\":\"white\",\"plot_bgcolor\":\"#E5ECF6\",\"polar\":{\"bgcolor\":\"#E5ECF6\",\"angularaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"radialaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"ternary\":{\"bgcolor\":\"#E5ECF6\",\"aaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"baxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"caxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"coloraxis\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"colorscale\":{\"sequential\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"sequentialminus\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"diverging\":[[0,\"#8e0152\"],[0.1,\"#c51b7d\"],[0.2,\"#de77ae\"],[0.3,\"#f1b6da\"],[0.4,\"#fde0ef\"],[0.5,\"#f7f7f7\"],[0.6,\"#e6f5d0\"],[0.7,\"#b8e186\"],[0.8,\"#7fbc41\"],[0.9,\"#4d9221\"],[1,\"#276419\"]]},\"xaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"automargin\":true,\"zerolinewidth\":2},\"yaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"automargin\":true,\"zerolinewidth\":2},\"scene\":{\"xaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2},\"yaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2},\"zaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2}},\"shapedefaults\":{\"line\":{\"color\":\"#2a3f5f\"}},\"annotationdefaults\":{\"arrowcolor\":\"#2a3f5f\",\"arrowhead\":0,\"arrowwidth\":1},\"geo\":{\"bgcolor\":\"white\",\"landcolor\":\"#E5ECF6\",\"subunitcolor\":\"white\",\"showland\":true,\"showlakes\":true,\"lakecolor\":\"white\"},\"title\":{\"x\":0.05},\"mapbox\":{\"style\":\"light\"}}},\"xaxis\":{\"anchor\":\"y\",\"domain\":[0.0,1.0],\"title\":{\"text\":\"Year\"}},\"yaxis\":{\"anchor\":\"x\",\"domain\":[0.0,1.0],\"title\":{\"text\":\"Total_Medals\"}},\"legend\":{\"title\":{\"text\":\"Country_Name\"},\"tracegroupgap\":0},\"title\":{\"text\":\"Top 10 Países por contagem total de medalhas de 1992 a 2020\"}},                        {\"responsive\": true}                    ).then(function(){\n",
-              "                            \n",
-              "var gd = document.getElementById('76058863-67da-46b0-94a8-24e8210ed0ec');\n",
-              "var x = new MutationObserver(function (mutations, observer) {{\n",
-              "        var display = window.getComputedStyle(gd).display;\n",
-              "        if (!display || display === 'none') {{\n",
-              "            console.log([gd, 'removed!']);\n",
-              "            Plotly.purge(gd);\n",
-              "            observer.disconnect();\n",
-              "        }}\n",
-              "}});\n",
-              "\n",
-              "// Listen for the removal of the full notebook cells\n",
-              "var notebookContainer = gd.closest('#notebook-container');\n",
-              "if (notebookContainer) {{\n",
-              "    x.observe(notebookContainer, {childList: true});\n",
-              "}}\n",
-              "\n",
-              "// Listen for the clearing of the current output cell\n",
-              "var outputEl = gd.closest('.output');\n",
-              "if (outputEl) {{\n",
-              "    x.observe(outputEl, {childList: true});\n",
-              "}}\n",
-              "\n",
-              "                        })                };                            </script>        </div>\n",
-              "</body>\n",
-              "</html>"
-            ]
-          },
-          "metadata": {}
-        }
-      ],
-      "source": [
-        "area_fig = px.area(df_top_10_countries,\n",
-        "                   x= \"Year\" ,\n",
-        "                   y= \"Total_Medals\",\n",
-        "                   color= \"Country_Name\",\n",
-        "                   title= 'Top 10 Países por contagem total de medalhas de 1992 a 2020' )\n",
-        "\n",
-        "area_fig.show()"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "dbc704a6",
-      "metadata": {
-        "id": "dbc704a6",
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 672
-        },
-        "outputId": "0a68c0c1-7a36-4521-fbc7-9cf179ce1f4e"
-      },
-      "outputs": [
-        {
-          "output_type": "display_data",
-          "data": {
-            "text/plain": [
-              "<IPython.core.display.Javascript object>"
-            ],
-            "application/javascript": [
-              "(async (port, path, width, height, cache, element) => {\n",
-              "    if (!google.colab.kernel.accessAllowed && !cache) {\n",
-              "      return;\n",
-              "    }\n",
-              "    element.appendChild(document.createTextNode(''));\n",
-              "    const url = await google.colab.kernel.proxyPort(port, {cache});\n",
-              "    const iframe = document.createElement('iframe');\n",
-              "    iframe.src = new URL(path, url).toString();\n",
-              "    iframe.height = height;\n",
-              "    iframe.width = width;\n",
-              "    iframe.style.border = 0;\n",
-              "    iframe.allow = [\n",
-              "        'accelerometer',\n",
-              "        'autoplay',\n",
-              "        'camera',\n",
-              "        'clipboard-read',\n",
-              "        'clipboard-write',\n",
-              "        'gyroscope',\n",
-              "        'magnetometer',\n",
-              "        'microphone',\n",
-              "        'serial',\n",
-              "        'usb',\n",
-              "        'xr-spatial-tracking',\n",
-              "    ].join('; ');\n",
-              "    element.appendChild(iframe);\n",
-              "  })(8050, \"/\", \"100%\", 650, false, window.element)"
-            ]
-          },
-          "metadata": {}
-        }
-      ],
-      "source": [
-        "\n",
-        "# Crie um aplicativo Dash\n",
-        "app = dash.Dash(__name__)\n",
-        "\n",
-        "\n",
-        "# Defina o layout\n",
-        "app.layout = html.Div(children=[\n",
-        "    dcc.Graph(figure=map_fig),\n",
-        "    dcc. Graph(figure=area_fig)\n",
-        "])\n",
-        "\n",
-        "# Execute o aplicativo\n",
-        "if __name__ == '__main__' :\n",
-        "    app.run( debug = False )  #com debug=True -> fica ativado o modo debug e exibindo as mensagens de erro"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "b4d30f17",
-      "metadata": {
-        "id": "b4d30f17"
-      },
-      "outputs": [],
-      "source": [
-        "#Passo 4 -> Plotando gráfico de Barra com os 10 paises com maior número de medalhas de ouro\n",
-        "\n",
-        "# Crie um gráfico de área empilhado para os 10 principais países por contagem total de medalhas\n",
-        "df_top_countries_gold = df.groupby('Country_Name')['Gold'].sum().nlargest(10).reset_index()\n",
-        "df_top_countries_gold"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "f096fc80",
-      "metadata": {
-        "id": "f096fc80"
-      },
-      "outputs": [],
-      "source": [
-        "# Create a bar chart for the top 10 countries with most gold medals\n",
-        "\n",
-        "bar_fig = px.bar(df_top_countries_gold, x='Country_Name', y='Gold', title='Top 10 Countries with Most Gold Medals from 1992 to 2020')\n",
-        "bar_fig.show()"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "7e0a5615",
-      "metadata": {
-        "id": "7e0a5615"
-      },
-      "outputs": [],
-      "source": [
-        "#Passo 5 -> Estilazando a tela com color_discrete_sequence = gold\n",
-        "\n",
-        "bar_fig = px.bar(df_top_countries_gold, x='Country_Name', y='Gold', color_discrete_sequence=['gold'], title='Top 10 Countries with Most Gold Medals from 1992 to 2020')\n",
-        "bar_fig.show()"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "d3322110",
-      "metadata": {
-        "id": "d3322110"
-      },
-      "outputs": [],
-      "source": [
-        "\n",
-        "# Create a Dash Application\n",
-        "app = dash.Dash(__name__)\n",
-        "\n",
-        "# Define the layout\n",
-        "app.layout = html.Div([\n",
-        "    dcc.Graph(figure=map_fig, id='map'),\n",
-        "    html.Div([\n",
-        "        dcc.Graph(figure=area_fig, id='area-chart'),\n",
-        "        dcc.Graph(figure=bar_fig, id='bar-chart')\n",
-        "    ], style={'display': 'flex'})\n",
-        "])\n",
-        "\n",
-        "\n",
-        "# Execute o aplicativo\n",
-        "if __name__ == '__main__' :\n",
-        "    app.run( debug = False )  #com debug=True -> fica ativado o modo debug e exibindo as mensagens de erro"
-      ]
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "7a083cfe",
-      "metadata": {
-        "id": "7a083cfe"
-      },
-      "outputs": [],
-      "source": [
-        "#Passo 5 -> Estizando a tela com ajuste do mapa dentro do container div\n",
-        "\n",
-        "# Create a Dash Application\n",
-        "app = dash.Dash(__name__)\n",
-        "\n",
-        "app.layout = html.Div([\n",
-        "    dcc.Graph(figure=map_fig, id='map', style={'height': '50vh', 'width': '100%'}),\n",
-        "    html.Div([\n",
-        "        dcc.Graph(figure=area_fig, id='area-chart'),\n",
-        "        dcc.Graph(figure=bar_fig, id='bar-chart')\n",
-        "    ], style={'display': 'flex'})\n",
-        "])\n",
-        "\n",
-        "# Execute o aplicativo\n",
-        "if __name__ == '__main__' :\n",
-        "    app.run( debug = False )  #com debug=True -> fica ativado o modo debug e exibindo as mensagens de erro"
-      ]
-    },
-    {
-      "cell_type": "markdown",
-      "source": [
-        "# Questão 1"
-      ],
-      "metadata": {
-        "id": "LpdCoVU5DfKM"
-      },
-      "id": "LpdCoVU5DfKM"
-    },
-    {
-      "cell_type": "code",
-      "execution_count": null,
-      "id": "95149d95",
-      "metadata": {
-        "id": "95149d95",
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 671
-        },
-        "outputId": "4285879a-c421-4538-f358-52828a223e3a"
-      },
-      "outputs": [
-        {
-          "output_type": "display_data",
-          "data": {
-            "text/plain": [
-              "<IPython.core.display.Javascript object>"
-            ],
-            "application/javascript": [
-              "(async (port, path, width, height, cache, element) => {\n",
-              "    if (!google.colab.kernel.accessAllowed && !cache) {\n",
-              "      return;\n",
-              "    }\n",
-              "    element.appendChild(document.createTextNode(''));\n",
-              "    const url = await google.colab.kernel.proxyPort(port, {cache});\n",
-              "    const iframe = document.createElement('iframe');\n",
-              "    iframe.src = new URL(path, url).toString();\n",
-              "    iframe.height = height;\n",
-              "    iframe.width = width;\n",
-              "    iframe.style.border = 0;\n",
-              "    iframe.allow = [\n",
-              "        'accelerometer',\n",
-              "        'autoplay',\n",
-              "        'camera',\n",
-              "        'clipboard-read',\n",
-              "        'clipboard-write',\n",
-              "        'gyroscope',\n",
-              "        'magnetometer',\n",
-              "        'microphone',\n",
-              "        'serial',\n",
-              "        'usb',\n",
-              "        'xr-spatial-tracking',\n",
-              "    ].join('; ');\n",
-              "    element.appendChild(iframe);\n",
-              "  })(8050, \"/\", \"100%\", 650, false, window.element)"
-            ]
-          },
-          "metadata": {}
-        }
-      ],
-      "source": [
-        "# Questão 1 - Gere um gráfico de pizza com filtro. Selecione o país, e exiba um gráfico com o total de medalhas de Ouro, prata e bronze.\n",
-        "\n",
-        "import pandas as pd\n",
-        "import plotly.express as px\n",
-        "import dash\n",
-        "from dash import dcc, html, Input, Output\n",
-        "\n",
-        "# Load the CSV file\n",
-        "df = pd.read_csv('Summer_olympic_Medals.csv')\n",
-        "df['Country_Name'] = df['Country_Name'].replace('United States', 'United States of America')\n",
-        "df = df[(df['Year'] >= 1992) & (df['Year'] <= 2020)]\n",
-        "\n",
-        "# Create the Dash app\n",
-        "app = dash.Dash(__name__)\n",
-        "\n",
-        "# Define the layout\n",
-        "app.layout = html.Div([\n",
-        "    html.H1(\"Distribuição de Medalhas\"),\n",
-        "    dcc.Dropdown(\n",
-        "        id='country-dropdown',\n",
-        "        options=[{'label': country, 'value': country} for country in df['Country_Name'].unique()],\n",
-        "        value=df['Country_Name'].unique()[5]  # Default value\n",
-        "    ),\n",
-        "    dcc.Graph(id='pie-chart')\n",
-        "])\n",
-        "\n",
-        "# Define the callback to update the pie chart\n",
-        "@app.callback(\n",
-        "    Output('pie-chart', 'figure'),\n",
-        "    Input('country-dropdown', 'value')\n",
-        ")\n",
-        "\n",
-        "def update_pie_chart(selected_country):\n",
-        "    filtered_df = df[df['Country_Name'] == selected_country]\n",
-        "    if filtered_df.empty:\n",
-        "        return px.pie(title=f\"No data available for {selected_country}\")\n",
-        "\n",
-        "    medal_counts = filtered_df.agg({'Gold': 'sum', 'Silver': 'sum', 'Bronze': 'sum'})\n",
-        "\n",
-        "    # Cria um dicionário para mapear as medalhas às cores corretas\n",
-        "    color_map = {'Gold': 'gold', 'Silver': 'silver', 'Bronze': 'brown'}\n",
-        "\n",
-        "    fig = px.pie(\n",
-        "        medal_counts,\n",
-        "        values=medal_counts.values,\n",
-        "        names=medal_counts.index,\n",
-        "        title=f\"Distribuição de Medalhas do País {selected_country}\",\n",
-        "        # Usa o color_discrete_map para atribuir as cores corretamente\n",
-        "        color_discrete_map=color_map\n",
-        "    )\n",
-        "    return fig\n",
-        "\n",
-        "\n",
-        "\n",
-        "# Run the app\n",
-        "if __name__ == '__main__':\n",
-        "    app.run(debug=False)\n"
-      ]
-    },
-    {
-      "cell_type": "markdown",
-      "source": [
-        "# Questão 2"
-      ],
-      "metadata": {
-        "id": "88EcZjlQDl3P"
-      },
-      "id": "88EcZjlQDl3P"
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "#Questão II - Nos 3 gráficos gerados aplique um filtro para que o usuário escolha o tipo de medalha: Ouro, Prata, Bronze ou Todos.\n",
-        "\n",
-        "\n"
-      ],
-      "metadata": {
-        "id": "of2pIwRtDoOE"
-      },
-      "id": "of2pIwRtDoOE",
-      "execution_count": null,
-      "outputs": []
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "import plotly.express as px\n",
-        "\n",
-        "# Supondo que o DataFrame df já esteja carregado e com as colunas 'Gold', 'Silver', 'Bronze', 'Year', 'Country_Name'\n",
-        "\n",
-        "# Filtra os dados entre 1992 e 2020\n",
-        "df = df[(df['Year'] >= 1992) & (df['Year'] <= 2020)]\n",
-        "\n",
-        "# Solicita ao usuário o tipo de medalha\n",
-        "tipo_medalha = input(\"Escolha o tipo de medalha (Ouro, Prata, Bronze, Todos): \").strip().lower()\n",
-        "\n",
-        "# Filtra de acordo com a escolha\n",
-        "if tipo_medalha == 'ouro':\n",
-        "    df['Total_Medals'] = df['Gold']\n",
-        "elif tipo_medalha == 'prata':\n",
-        "    df['Total_Medals'] = df['Silver']\n",
-        "elif tipo_medalha == 'bronze':\n",
-        "    df['Total_Medals'] = df['Bronze']\n",
-        "elif tipo_medalha == 'todos':\n",
-        "    df['Total_Medals'] = df['Gold'] + df['Silver'] + df['Bronze']\n",
-        "else:\n",
-        "    raise ValueError(\"Escolha inválida. Opções: Ouro, Prata, Bronze ou Todos.\")\n",
-        "\n",
-        "# Agrupa por país\n",
-        "df_country_medals = df.groupby('Country_Name')['Total_Medals'].sum().reset_index()\n",
-        "\n",
-        "# Gera o gráfico do mapa\n",
-        "map_fig = px.choropleth(\n",
-        "    df_country_medals,\n",
-        "    locations='Country_Name',\n",
-        "    locationmode='country names',\n",
-        "    color='Total_Medals',\n",
-        "    hover_name='Country_Name',\n",
-        "    color_continuous_scale=px.colors.sequential.YlOrRd,\n",
-        "    title=f'Total de medalhas ({tipo_medalha.capitalize()}) de 1992 a 2020'\n",
-        ")\n",
-        "\n",
-        "map_fig.show()\n"
-      ],
-      "metadata": {
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 559
-        },
-        "id": "ySZ-Z_1uGT_h",
-        "outputId": "1f551ca2-8a49-4362-a7c5-7b2fc71a652c"
-      },
-      "id": "ySZ-Z_1uGT_h",
-      "execution_count": null,
-      "outputs": [
-        {
-          "name": "stdout",
-          "output_type": "stream",
-          "text": [
-            "Escolha o tipo de medalha (Ouro, Prata, Bronze, Todos): Todos\n"
-          ]
-        },
-        {
-          "output_type": "display_data",
-          "data": {
-            "text/html": [
-              "<html>\n",
-              "<head><meta charset=\"utf-8\" /></head>\n",
-              "<body>\n",
-              "    <div>            <script src=\"https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG\"></script><script type=\"text/javascript\">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: \"STIX-Web\"}});}</script>                <script type=\"text/javascript\">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>\n",
-              "        <script charset=\"utf-8\" src=\"https://cdn.plot.ly/plotly-2.35.2.min.js\"></script>                <div id=\"a2d787a1-6f9a-43d6-8230-80bd51164157\" class=\"plotly-graph-div\" style=\"height:525px; width:100%;\"></div>            <script type=\"text/javascript\">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById(\"a2d787a1-6f9a-43d6-8230-80bd51164157\")) {                    Plotly.newPlot(                        \"a2d787a1-6f9a-43d6-8230-80bd51164157\",                        [{\"coloraxis\":\"coloraxis\",\"geo\":\"geo\",\"hovertemplate\":\"\\u003cb\\u003e%{hovertext}\\u003c\\u002fb\\u003e\\u003cbr\\u003e\\u003cbr\\u003eCountry_Name=%{location}\\u003cbr\\u003eTotal_Medals=%{z}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"hovertext\":[\"Afghanistan\",\"Algeria\",\"Argentina\",\"Armenia\",\"Australia\",\"Austria\",\"Azerbaijan\",\"Bahamas\",\"Bahrain\",\"Barbados\",\"Belarus\",\"Belgium\",\"Bermuda\",\"Botswana\",\"Brazil\",\"Bulgaria\",\"Burkina Faso\",\"Burundi\",\"Cameroon\",\"Canada\",\"Chile\",\"China\",\"Chinese Taipei\",\"Colombia\",\"Costa Rica\",\"Croatia\",\"Cuba\",\"Cyprus\",\"Czech Republic\",\"Czechoslovakia\",\"Denmark\",\"Dominican Republic\",\"Ecuador\",\"Egypt\",\"Eritrea\",\"Estonia\",\"Ethiopia\",\"Fiji\",\"Finland\",\"France\",\"Gabon\",\"Georgia\",\"Germany\",\"Ghana\",\"Great Britain\",\"Greece\",\"Grenada\",\"Guatemala\",\"Hong Kong\",\"Hungary\",\"Iceland\",\"Independent Olympic Athletes\",\"Independent Olympic Participants\",\"India\",\"Indonesia\",\"Iran\",\"Ireland\",\"Israel\",\"Italy\",\"Ivory Coast\",\"Jamaica\",\"Japan\",\"Jordan\",\"Kazakhstan\",\"Kenya\",\"Kosovo\",\"Kuwait\",\"Kyrgyzstan\",\"Latvia\",\"Lithuania\",\"Macedonia\",\"Malaysia\",\"Mauritius\",\"Mexico\",\"Moldova\",\"Mongolia\",\"Montenegro\",\"Morocco\",\"Mozambique\",\"Namibia\",\"Netherlands\",\"New Zealand\",\"Niger\",\"Nigeria\",\"North Korea\",\"North Macedonia\",\"Norway\",\"Pakistan\",\"Panama\",\"Paraguay\",\"Peru\",\"Philippines\",\"Poland\",\"Portugal\",\"Puerto Rico\",\"Qatar\",\"ROC\",\"Romania\",\"Russia\",\"Samoa\",\"San Marino\",\"Saudi Arabia\",\"Serbia\",\"Serbia and Montenegro\",\"Singapore\",\"Slovakia\",\"Slovenia\",\"South Africa\",\"South Korea\",\"Spain\",\"Sri Lanka\",\"Sudan\",\"Suriname\",\"Sweden\",\"Switzerland\",\"Syria\",\"Tajikistan\",\"Thailand\",\"Togo\",\"Tonga\",\"Trinidad and Tobago\",\"Tunisia\",\"Turkey\",\"Turkmenistan\",\"Uganda\",\"Ukraine\",\"Unified Team\",\"United Arab Emirates\",\"United States of America\",\"Uruguay\",\"Uzbekistan\",\"Venezuela\",\"Vietnam\",\"Yugoslavia\",\"Zambia\",\"Zimbabwe\"],\"locationmode\":\"country names\",\"locations\":[\"Afghanistan\",\"Algeria\",\"Argentina\",\"Armenia\",\"Australia\",\"Austria\",\"Azerbaijan\",\"Bahamas\",\"Bahrain\",\"Barbados\",\"Belarus\",\"Belgium\",\"Bermuda\",\"Botswana\",\"Brazil\",\"Bulgaria\",\"Burkina Faso\",\"Burundi\",\"Cameroon\",\"Canada\",\"Chile\",\"China\",\"Chinese Taipei\",\"Colombia\",\"Costa Rica\",\"Croatia\",\"Cuba\",\"Cyprus\",\"Czech Republic\",\"Czechoslovakia\",\"Denmark\",\"Dominican Republic\",\"Ecuador\",\"Egypt\",\"Eritrea\",\"Estonia\",\"Ethiopia\",\"Fiji\",\"Finland\",\"France\",\"Gabon\",\"Georgia\",\"Germany\",\"Ghana\",\"Great Britain\",\"Greece\",\"Grenada\",\"Guatemala\",\"Hong Kong\",\"Hungary\",\"Iceland\",\"Independent Olympic Athletes\",\"Independent Olympic Participants\",\"India\",\"Indonesia\",\"Iran\",\"Ireland\",\"Israel\",\"Italy\",\"Ivory Coast\",\"Jamaica\",\"Japan\",\"Jordan\",\"Kazakhstan\",\"Kenya\",\"Kosovo\",\"Kuwait\",\"Kyrgyzstan\",\"Latvia\",\"Lithuania\",\"Macedonia\",\"Malaysia\",\"Mauritius\",\"Mexico\",\"Moldova\",\"Mongolia\",\"Montenegro\",\"Morocco\",\"Mozambique\",\"Namibia\",\"Netherlands\",\"New Zealand\",\"Niger\",\"Nigeria\",\"North Korea\",\"North Macedonia\",\"Norway\",\"Pakistan\",\"Panama\",\"Paraguay\",\"Peru\",\"Philippines\",\"Poland\",\"Portugal\",\"Puerto Rico\",\"Qatar\",\"ROC\",\"Romania\",\"Russia\",\"Samoa\",\"San Marino\",\"Saudi Arabia\",\"Serbia\",\"Serbia and Montenegro\",\"Singapore\",\"Slovakia\",\"Slovenia\",\"South Africa\",\"South Korea\",\"Spain\",\"Sri Lanka\",\"Sudan\",\"Suriname\",\"Sweden\",\"Switzerland\",\"Syria\",\"Tajikistan\",\"Thailand\",\"Togo\",\"Tonga\",\"Trinidad and Tobago\",\"Tunisia\",\"Turkey\",\"Turkmenistan\",\"Uganda\",\"Ukraine\",\"Unified Team\",\"United Arab Emirates\",\"United States of America\",\"Uruguay\",\"Uzbekistan\",\"Venezuela\",\"Vietnam\",\"Yugoslavia\",\"Zambia\",\"Zimbabwe\"],\"name\":\"\",\"z\":[2,15,31,18,332,26,49,14,4,1,85,35,1,2,114,73,1,2,4,150,5,574,33,29,3,41,183,1,67,7,68,11,5,20,1,15,48,3,25,290,1,40,416,2,341,54,3,1,9,148,2,2,3,21,36,46,22,13,243,3,67,253,3,72,82,3,3,7,18,26,1,13,1,33,6,19,1,18,2,5,172,85,1,23,43,1,55,1,1,1,1,7,107,15,6,8,71,107,426,1,3,4,24,2,4,32,28,38,217,142,1,1,1,72,53,3,4,32,1,1,12,10,57,1,6,139,112,2,853,1,36,11,5,7,1,7],\"type\":\"choropleth\"}],                        {\"template\":{\"data\":{\"histogram2dcontour\":[{\"type\":\"histogram2dcontour\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"choropleth\":[{\"type\":\"choropleth\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"histogram2d\":[{\"type\":\"histogram2d\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"heatmap\":[{\"type\":\"heatmap\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"heatmapgl\":[{\"type\":\"heatmapgl\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"contourcarpet\":[{\"type\":\"contourcarpet\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"contour\":[{\"type\":\"contour\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"surface\":[{\"type\":\"surface\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"mesh3d\":[{\"type\":\"mesh3d\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"scatter\":[{\"fillpattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2},\"type\":\"scatter\"}],\"parcoords\":[{\"type\":\"parcoords\",\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterpolargl\":[{\"type\":\"scatterpolargl\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"bar\":[{\"error_x\":{\"color\":\"#2a3f5f\"},\"error_y\":{\"color\":\"#2a3f5f\"},\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"bar\"}],\"scattergeo\":[{\"type\":\"scattergeo\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterpolar\":[{\"type\":\"scatterpolar\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"histogram\":[{\"marker\":{\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"histogram\"}],\"scattergl\":[{\"type\":\"scattergl\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatter3d\":[{\"type\":\"scatter3d\",\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scattermapbox\":[{\"type\":\"scattermapbox\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterternary\":[{\"type\":\"scatterternary\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scattercarpet\":[{\"type\":\"scattercarpet\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"carpet\":[{\"aaxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"baxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"type\":\"carpet\"}],\"table\":[{\"cells\":{\"fill\":{\"color\":\"#EBF0F8\"},\"line\":{\"color\":\"white\"}},\"header\":{\"fill\":{\"color\":\"#C8D4E3\"},\"line\":{\"color\":\"white\"}},\"type\":\"table\"}],\"barpolar\":[{\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"barpolar\"}],\"pie\":[{\"automargin\":true,\"type\":\"pie\"}]},\"layout\":{\"autotypenumbers\":\"strict\",\"colorway\":[\"#636efa\",\"#EF553B\",\"#00cc96\",\"#ab63fa\",\"#FFA15A\",\"#19d3f3\",\"#FF6692\",\"#B6E880\",\"#FF97FF\",\"#FECB52\"],\"font\":{\"color\":\"#2a3f5f\"},\"hovermode\":\"closest\",\"hoverlabel\":{\"align\":\"left\"},\"paper_bgcolor\":\"white\",\"plot_bgcolor\":\"#E5ECF6\",\"polar\":{\"bgcolor\":\"#E5ECF6\",\"angularaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"radialaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"ternary\":{\"bgcolor\":\"#E5ECF6\",\"aaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"baxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"caxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"coloraxis\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"colorscale\":{\"sequential\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"sequentialminus\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"diverging\":[[0,\"#8e0152\"],[0.1,\"#c51b7d\"],[0.2,\"#de77ae\"],[0.3,\"#f1b6da\"],[0.4,\"#fde0ef\"],[0.5,\"#f7f7f7\"],[0.6,\"#e6f5d0\"],[0.7,\"#b8e186\"],[0.8,\"#7fbc41\"],[0.9,\"#4d9221\"],[1,\"#276419\"]]},\"xaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"automargin\":true,\"zerolinewidth\":2},\"yaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"automargin\":true,\"zerolinewidth\":2},\"scene\":{\"xaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2},\"yaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2},\"zaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2}},\"shapedefaults\":{\"line\":{\"color\":\"#2a3f5f\"}},\"annotationdefaults\":{\"arrowcolor\":\"#2a3f5f\",\"arrowhead\":0,\"arrowwidth\":1},\"geo\":{\"bgcolor\":\"white\",\"landcolor\":\"#E5ECF6\",\"subunitcolor\":\"white\",\"showland\":true,\"showlakes\":true,\"lakecolor\":\"white\"},\"title\":{\"x\":0.05},\"mapbox\":{\"style\":\"light\"}}},\"geo\":{\"domain\":{\"x\":[0.0,1.0],\"y\":[0.0,1.0]},\"center\":{}},\"coloraxis\":{\"colorbar\":{\"title\":{\"text\":\"Total_Medals\"}},\"colorscale\":[[0.0,\"rgb(255,255,204)\"],[0.125,\"rgb(255,237,160)\"],[0.25,\"rgb(254,217,118)\"],[0.375,\"rgb(254,178,76)\"],[0.5,\"rgb(253,141,60)\"],[0.625,\"rgb(252,78,42)\"],[0.75,\"rgb(227,26,28)\"],[0.875,\"rgb(189,0,38)\"],[1.0,\"rgb(128,0,38)\"]]},\"legend\":{\"tracegroupgap\":0},\"title\":{\"text\":\"Total de medalhas (Todos) de 1992 a 2020\"}},                        {\"responsive\": true}                    ).then(function(){\n",
-              "                            \n",
-              "var gd = document.getElementById('a2d787a1-6f9a-43d6-8230-80bd51164157');\n",
-              "var x = new MutationObserver(function (mutations, observer) {{\n",
-              "        var display = window.getComputedStyle(gd).display;\n",
-              "        if (!display || display === 'none') {{\n",
-              "            console.log([gd, 'removed!']);\n",
-              "            Plotly.purge(gd);\n",
-              "            observer.disconnect();\n",
-              "        }}\n",
-              "}});\n",
-              "\n",
-              "// Listen for the removal of the full notebook cells\n",
-              "var notebookContainer = gd.closest('#notebook-container');\n",
-              "if (notebookContainer) {{\n",
-              "    x.observe(notebookContainer, {childList: true});\n",
-              "}}\n",
-              "\n",
-              "// Listen for the clearing of the current output cell\n",
-              "var outputEl = gd.closest('.output');\n",
-              "if (outputEl) {{\n",
-              "    x.observe(outputEl, {childList: true});\n",
-              "}}\n",
-              "\n",
-              "                        })                };                            </script>        </div>\n",
-              "</body>\n",
-              "</html>"
-            ]
-          },
-          "metadata": {}
-        }
-      ]
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "\n",
-        "import plotly.express as px\n",
-        "\n",
-        "# Suponha que o DataFrame df já está carregado e contém as colunas 'Year', 'Country_Name', 'Gold', 'Silver', 'Bronze'\n",
-        "\n",
-        "# Filtra os dados entre 1992 e 2020\n",
-        "df = df[(df['Year'] >= 1992) & (df['Year'] <= 2020)]\n",
-        "\n",
-        "# Solicita ao usuário o tipo de medalha\n",
-        "tipo_medalha = input(\"Escolha o tipo de medalha (Ouro, Prata, Bronze, Todas): \").strip().lower()\n",
-        "\n",
-        "# Processa a escolha do usuário\n",
-        "if tipo_medalha == 'ouro':\n",
-        "    medal_col = 'Gold'\n",
-        "    cor = 'gold'\n",
-        "    titulo = 'Top 10 Países com Mais Medalhas de Ouro (1992-2020)'\n",
-        "elif tipo_medalha == 'prata':\n",
-        "    medal_col = 'Silver'\n",
-        "    cor = 'silver'\n",
-        "    titulo = 'Top 10 Países com Mais Medalhas de Prata (1992-2020)'\n",
-        "elif tipo_medalha == 'bronze':\n",
-        "    medal_col = 'Bronze'\n",
-        "    cor = '#cd7f32'  # Cor bronze hexadecimal\n",
-        "    titulo = 'Top 10 Países com Mais Medalhas de Bronze (1992-2020)'\n",
-        "elif tipo_medalha == 'todas':\n",
-        "    df['Total'] = df['Gold'] + df['Silver'] + df['Bronze']\n",
-        "    medal_col = 'Total'\n",
-        "    cor = 'darkcyan'\n",
-        "    titulo = 'Top 10 Países com Mais Medalhas (1992-2020)'\n",
-        "else:\n",
-        "    raise ValueError(\"Escolha inválida. Opções: Ouro, Prata, Bronze ou Todas.\")\n",
-        "\n",
-        "# Agrupa e seleciona os top 10 países\n",
-        "df_medals = df.groupby('Country_Name')[medal_col].sum().reset_index()\n",
-        "df_top_countries = df_medals.sort_values(by=medal_col, ascending=False).head(10)\n",
-        "df_top_countries['Medalha'] = tipo_medalha.capitalize()\n",
-        "\n",
-        "# Gera o gráfico de barras\n",
-        "bar_fig = px.bar(\n",
-        "    df_top_countries,\n",
-        "    x='Country_Name',\n",
-        "    y=medal_col,\n",
-        "    color='Medalha',  # Habilita color_discrete_sequence\n",
-        "    color_discrete_sequence=[cor],\n",
-        "    title=titulo\n",
-        ")\n",
-        "\n",
-        "bar_fig.update_layout(showlegend=False)\n",
-        "bar_fig.show()"
-      ],
-      "metadata": {
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 559
-        },
-        "id": "DmA-lIE7HaRK",
-        "outputId": "a5457bb0-a9d8-43bb-ac40-cdb0e7fa41f4"
-      },
-      "id": "DmA-lIE7HaRK",
-      "execution_count": null,
-      "outputs": [
-        {
-          "name": "stdout",
-          "output_type": "stream",
-          "text": [
-            "Escolha o tipo de medalha (Ouro, Prata, Bronze, Todas): Bronze\n"
-          ]
-        },
-        {
-          "output_type": "display_data",
-          "data": {
-            "text/html": [
-              "<html>\n",
-              "<head><meta charset=\"utf-8\" /></head>\n",
-              "<body>\n",
-              "    <div>            <script src=\"https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG\"></script><script type=\"text/javascript\">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: \"STIX-Web\"}});}</script>                <script type=\"text/javascript\">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>\n",
-              "        <script charset=\"utf-8\" src=\"https://cdn.plot.ly/plotly-2.35.2.min.js\"></script>                <div id=\"f4705c4e-f063-4907-972a-f8dd0ec83061\" class=\"plotly-graph-div\" style=\"height:525px; width:100%;\"></div>            <script type=\"text/javascript\">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById(\"f4705c4e-f063-4907-972a-f8dd0ec83061\")) {                    Plotly.newPlot(                        \"f4705c4e-f063-4907-972a-f8dd0ec83061\",                        [{\"alignmentgroup\":\"True\",\"hovertemplate\":\"Medalha=Bronze\\u003cbr\\u003eCountry_Name=%{x}\\u003cbr\\u003eBronze=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Bronze\",\"marker\":{\"color\":\"#cd7f32\",\"pattern\":{\"shape\":\"\"}},\"name\":\"Bronze\",\"offsetgroup\":\"Bronze\",\"orientation\":\"v\",\"showlegend\":true,\"textposition\":\"auto\",\"x\":[\"United States of America\",\"Germany\",\"China\",\"Russia\",\"Australia\",\"Great Britain\",\"France\",\"Japan\",\"Italy\",\"South Korea\"],\"xaxis\":\"x\",\"y\":[258,159,152,152,129,114,113,96,93,71],\"yaxis\":\"y\",\"type\":\"bar\"}],                        {\"template\":{\"data\":{\"histogram2dcontour\":[{\"type\":\"histogram2dcontour\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"choropleth\":[{\"type\":\"choropleth\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"histogram2d\":[{\"type\":\"histogram2d\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"heatmap\":[{\"type\":\"heatmap\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"heatmapgl\":[{\"type\":\"heatmapgl\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"contourcarpet\":[{\"type\":\"contourcarpet\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"contour\":[{\"type\":\"contour\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"surface\":[{\"type\":\"surface\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"mesh3d\":[{\"type\":\"mesh3d\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"scatter\":[{\"fillpattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2},\"type\":\"scatter\"}],\"parcoords\":[{\"type\":\"parcoords\",\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterpolargl\":[{\"type\":\"scatterpolargl\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"bar\":[{\"error_x\":{\"color\":\"#2a3f5f\"},\"error_y\":{\"color\":\"#2a3f5f\"},\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"bar\"}],\"scattergeo\":[{\"type\":\"scattergeo\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterpolar\":[{\"type\":\"scatterpolar\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"histogram\":[{\"marker\":{\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"histogram\"}],\"scattergl\":[{\"type\":\"scattergl\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatter3d\":[{\"type\":\"scatter3d\",\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scattermapbox\":[{\"type\":\"scattermapbox\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterternary\":[{\"type\":\"scatterternary\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scattercarpet\":[{\"type\":\"scattercarpet\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"carpet\":[{\"aaxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"baxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"type\":\"carpet\"}],\"table\":[{\"cells\":{\"fill\":{\"color\":\"#EBF0F8\"},\"line\":{\"color\":\"white\"}},\"header\":{\"fill\":{\"color\":\"#C8D4E3\"},\"line\":{\"color\":\"white\"}},\"type\":\"table\"}],\"barpolar\":[{\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"barpolar\"}],\"pie\":[{\"automargin\":true,\"type\":\"pie\"}]},\"layout\":{\"autotypenumbers\":\"strict\",\"colorway\":[\"#636efa\",\"#EF553B\",\"#00cc96\",\"#ab63fa\",\"#FFA15A\",\"#19d3f3\",\"#FF6692\",\"#B6E880\",\"#FF97FF\",\"#FECB52\"],\"font\":{\"color\":\"#2a3f5f\"},\"hovermode\":\"closest\",\"hoverlabel\":{\"align\":\"left\"},\"paper_bgcolor\":\"white\",\"plot_bgcolor\":\"#E5ECF6\",\"polar\":{\"bgcolor\":\"#E5ECF6\",\"angularaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"radialaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"ternary\":{\"bgcolor\":\"#E5ECF6\",\"aaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"baxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"caxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"coloraxis\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"colorscale\":{\"sequential\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"sequentialminus\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"diverging\":[[0,\"#8e0152\"],[0.1,\"#c51b7d\"],[0.2,\"#de77ae\"],[0.3,\"#f1b6da\"],[0.4,\"#fde0ef\"],[0.5,\"#f7f7f7\"],[0.6,\"#e6f5d0\"],[0.7,\"#b8e186\"],[0.8,\"#7fbc41\"],[0.9,\"#4d9221\"],[1,\"#276419\"]]},\"xaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"automargin\":true,\"zerolinewidth\":2},\"yaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"automargin\":true,\"zerolinewidth\":2},\"scene\":{\"xaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2},\"yaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2},\"zaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2}},\"shapedefaults\":{\"line\":{\"color\":\"#2a3f5f\"}},\"annotationdefaults\":{\"arrowcolor\":\"#2a3f5f\",\"arrowhead\":0,\"arrowwidth\":1},\"geo\":{\"bgcolor\":\"white\",\"landcolor\":\"#E5ECF6\",\"subunitcolor\":\"white\",\"showland\":true,\"showlakes\":true,\"lakecolor\":\"white\"},\"title\":{\"x\":0.05},\"mapbox\":{\"style\":\"light\"}}},\"xaxis\":{\"anchor\":\"y\",\"domain\":[0.0,1.0],\"title\":{\"text\":\"Country_Name\"}},\"yaxis\":{\"anchor\":\"x\",\"domain\":[0.0,1.0],\"title\":{\"text\":\"Bronze\"}},\"legend\":{\"title\":{\"text\":\"Medalha\"},\"tracegroupgap\":0},\"title\":{\"text\":\"Top 10 Países com Mais Medalhas de Bronze (1992-2020)\"},\"barmode\":\"relative\",\"showlegend\":false},                        {\"responsive\": true}                    ).then(function(){\n",
-              "                            \n",
-              "var gd = document.getElementById('f4705c4e-f063-4907-972a-f8dd0ec83061');\n",
-              "var x = new MutationObserver(function (mutations, observer) {{\n",
-              "        var display = window.getComputedStyle(gd).display;\n",
-              "        if (!display || display === 'none') {{\n",
-              "            console.log([gd, 'removed!']);\n",
-              "            Plotly.purge(gd);\n",
-              "            observer.disconnect();\n",
-              "        }}\n",
-              "}});\n",
-              "\n",
-              "// Listen for the removal of the full notebook cells\n",
-              "var notebookContainer = gd.closest('#notebook-container');\n",
-              "if (notebookContainer) {{\n",
-              "    x.observe(notebookContainer, {childList: true});\n",
-              "}}\n",
-              "\n",
-              "// Listen for the clearing of the current output cell\n",
-              "var outputEl = gd.closest('.output');\n",
-              "if (outputEl) {{\n",
-              "    x.observe(outputEl, {childList: true});\n",
-              "}}\n",
-              "\n",
-              "                        })                };                            </script>        </div>\n",
-              "</body>\n",
-              "</html>"
-            ]
-          },
-          "metadata": {}
-        }
-      ]
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "import plotly.express as px\n",
-        "import pandas as pd\n",
-        "\n",
-        "# Filtra os dados entre 1992 e 2020\n",
-        "df = df[(df['Year'] >= 1992) & (df['Year'] <= 2020)]\n",
-        "\n",
-        "# Entrada do usuário\n",
-        "tipo_medalha = input(\"Escolha o tipo de medalha (Ouro, Prata, Bronze, Todas): \").strip().lower()\n",
-        "\n",
-        "# Define coluna e título\n",
-        "if tipo_medalha == 'ouro':\n",
-        "    medal_col = 'Gold'\n",
-        "    titulo = 'Top 10 Países por Medalhas de Ouro (1992-2020)'\n",
-        "elif tipo_medalha == 'prata':\n",
-        "    medal_col = 'Silver'\n",
-        "    titulo = 'Top 10 Países por Medalhas de Prata (1992-2020)'\n",
-        "elif tipo_medalha == 'bronze':\n",
-        "    medal_col = 'Bronze'\n",
-        "    titulo = 'Top 10 Países por Medalhas de Bronze (1992-2020)'\n",
-        "elif tipo_medalha == 'todas':\n",
-        "    df['Total_Medals'] = df['Gold'] + df['Silver'] + df['Bronze']\n",
-        "    medal_col = 'Total_Medals'\n",
-        "    titulo = 'Top 10 Países por Medalhas Totais (1992-2020)'\n",
-        "else:\n",
-        "    raise ValueError(\"Escolha inválida. Opções: Ouro, Prata, Bronze ou Todas.\")\n",
-        "\n",
-        "# Encontra os top 10 países\n",
-        "df_total = df.groupby('Country_Name')[medal_col].sum().reset_index()\n",
-        "top_10 = df_total.sort_values(by=medal_col, ascending=False).head(10)['Country_Name']\n",
-        "\n",
-        "# Filtra o dataframe\n",
-        "df_top_10 = df[df['Country_Name'].isin(top_10)]\n",
-        "\n",
-        "# Recalcula os totais apenas para os top 10 e ordena (menor para maior, para empilhar corretamente)\n",
-        "country_order = df_top_10.groupby('Country_Name')[medal_col].sum().sort_values().index.tolist()\n",
-        "\n",
-        "# Gráfico de área com ordem de empilhamento correta\n",
-        "area_fig = px.area(\n",
-        "    df_top_10,\n",
-        "    x=\"Year\",\n",
-        "    y=medal_col,\n",
-        "    color=\"Country_Name\",\n",
-        "    title=titulo,\n",
-        "    category_orders={\"Country_Name\": country_order}  # Ordem explícita para empilhamento\n",
-        ")\n",
-        "\n",
-        "area_fig.show()"
-      ],
-      "metadata": {
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 559
-        },
-        "id": "RFWr75vgH1Nf",
-        "outputId": "ec23814e-8fce-403e-d6e5-d5982c3090c6"
-      },
-      "id": "RFWr75vgH1Nf",
-      "execution_count": null,
-      "outputs": [
-        {
-          "name": "stdout",
-          "output_type": "stream",
-          "text": [
-            "Escolha o tipo de medalha (Ouro, Prata, Bronze, Todas): bRONZE\n"
-          ]
-        },
-        {
-          "output_type": "display_data",
-          "data": {
-            "text/html": [
-              "<html>\n",
-              "<head><meta charset=\"utf-8\" /></head>\n",
-              "<body>\n",
-              "    <div>            <script src=\"https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG\"></script><script type=\"text/javascript\">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: \"STIX-Web\"}});}</script>                <script type=\"text/javascript\">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>\n",
-              "        <script charset=\"utf-8\" src=\"https://cdn.plot.ly/plotly-2.35.2.min.js\"></script>                <div id=\"45a623cb-e7a4-4fde-a992-573aa2e38beb\" class=\"plotly-graph-div\" style=\"height:525px; width:100%;\"></div>            <script type=\"text/javascript\">                                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById(\"45a623cb-e7a4-4fde-a992-573aa2e38beb\")) {                    Plotly.newPlot(                        \"45a623cb-e7a4-4fde-a992-573aa2e38beb\",                        [{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=South Korea\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eBronze=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"South Korea\",\"line\":{\"color\":\"#636efa\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"South Korea\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[12,5,10,9,8,8,9,10],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=Italy\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eBronze=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Italy\",\"line\":{\"color\":\"#EF553B\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"Italy\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[8,12,13,11,10,11,8,20],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=Japan\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eBronze=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Japan\",\"line\":{\"color\":\"#00cc96\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"Japan\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[11,5,5,12,8,17,21,17],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=France\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eBronze=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"France\",\"line\":{\"color\":\"#ab63fa\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"France\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[16,15,11,13,20,13,14,11],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=Great Britain\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eBronze=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Great Britain\",\"line\":{\"color\":\"#FFA15A\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"Great Britain\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[12,6,7,12,19,19,17,22],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=Australia\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eBronze=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Australia\",\"line\":{\"color\":\"#19d3f3\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"Australia\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[11,23,17,17,17,12,10,22],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=Russia\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eBronze=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Russia\",\"line\":{\"color\":\"#FF6692\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"Russia\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1996,2000,2004,2008,2012,2016],\"xaxis\":\"x\",\"y\":[16,29,36,23,28,20],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=China\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eBronze=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"China\",\"line\":{\"color\":\"#B6E880\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"China\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[16,12,14,14,30,22,26,18],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=Germany\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eBronze=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"Germany\",\"line\":{\"color\":\"#FF97FF\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"Germany\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[28,27,26,20,14,13,15,16],\"yaxis\":\"y\",\"type\":\"scatter\"},{\"fillpattern\":{\"shape\":\"\"},\"hovertemplate\":\"Country_Name=United States of America\\u003cbr\\u003eYear=%{x}\\u003cbr\\u003eBronze=%{y}\\u003cextra\\u003e\\u003c\\u002fextra\\u003e\",\"legendgroup\":\"United States of America\",\"line\":{\"color\":\"#FECB52\"},\"marker\":{\"symbol\":\"circle\"},\"mode\":\"lines\",\"name\":\"United States of America\",\"orientation\":\"v\",\"showlegend\":true,\"stackgroup\":\"1\",\"x\":[1992,1996,2000,2004,2008,2012,2016,2020],\"xaxis\":\"x\",\"y\":[37,25,32,26,37,30,38,33],\"yaxis\":\"y\",\"type\":\"scatter\"}],                        {\"template\":{\"data\":{\"histogram2dcontour\":[{\"type\":\"histogram2dcontour\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"choropleth\":[{\"type\":\"choropleth\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"histogram2d\":[{\"type\":\"histogram2d\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"heatmap\":[{\"type\":\"heatmap\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"heatmapgl\":[{\"type\":\"heatmapgl\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"contourcarpet\":[{\"type\":\"contourcarpet\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"contour\":[{\"type\":\"contour\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"surface\":[{\"type\":\"surface\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"},\"colorscale\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]]}],\"mesh3d\":[{\"type\":\"mesh3d\",\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}],\"scatter\":[{\"fillpattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2},\"type\":\"scatter\"}],\"parcoords\":[{\"type\":\"parcoords\",\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterpolargl\":[{\"type\":\"scatterpolargl\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"bar\":[{\"error_x\":{\"color\":\"#2a3f5f\"},\"error_y\":{\"color\":\"#2a3f5f\"},\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"bar\"}],\"scattergeo\":[{\"type\":\"scattergeo\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterpolar\":[{\"type\":\"scatterpolar\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"histogram\":[{\"marker\":{\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"histogram\"}],\"scattergl\":[{\"type\":\"scattergl\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatter3d\":[{\"type\":\"scatter3d\",\"line\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scattermapbox\":[{\"type\":\"scattermapbox\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scatterternary\":[{\"type\":\"scatterternary\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"scattercarpet\":[{\"type\":\"scattercarpet\",\"marker\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}}}],\"carpet\":[{\"aaxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"baxis\":{\"endlinecolor\":\"#2a3f5f\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"minorgridcolor\":\"white\",\"startlinecolor\":\"#2a3f5f\"},\"type\":\"carpet\"}],\"table\":[{\"cells\":{\"fill\":{\"color\":\"#EBF0F8\"},\"line\":{\"color\":\"white\"}},\"header\":{\"fill\":{\"color\":\"#C8D4E3\"},\"line\":{\"color\":\"white\"}},\"type\":\"table\"}],\"barpolar\":[{\"marker\":{\"line\":{\"color\":\"#E5ECF6\",\"width\":0.5},\"pattern\":{\"fillmode\":\"overlay\",\"size\":10,\"solidity\":0.2}},\"type\":\"barpolar\"}],\"pie\":[{\"automargin\":true,\"type\":\"pie\"}]},\"layout\":{\"autotypenumbers\":\"strict\",\"colorway\":[\"#636efa\",\"#EF553B\",\"#00cc96\",\"#ab63fa\",\"#FFA15A\",\"#19d3f3\",\"#FF6692\",\"#B6E880\",\"#FF97FF\",\"#FECB52\"],\"font\":{\"color\":\"#2a3f5f\"},\"hovermode\":\"closest\",\"hoverlabel\":{\"align\":\"left\"},\"paper_bgcolor\":\"white\",\"plot_bgcolor\":\"#E5ECF6\",\"polar\":{\"bgcolor\":\"#E5ECF6\",\"angularaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"radialaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"ternary\":{\"bgcolor\":\"#E5ECF6\",\"aaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"baxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"},\"caxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\"}},\"coloraxis\":{\"colorbar\":{\"outlinewidth\":0,\"ticks\":\"\"}},\"colorscale\":{\"sequential\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"sequentialminus\":[[0.0,\"#0d0887\"],[0.1111111111111111,\"#46039f\"],[0.2222222222222222,\"#7201a8\"],[0.3333333333333333,\"#9c179e\"],[0.4444444444444444,\"#bd3786\"],[0.5555555555555556,\"#d8576b\"],[0.6666666666666666,\"#ed7953\"],[0.7777777777777778,\"#fb9f3a\"],[0.8888888888888888,\"#fdca26\"],[1.0,\"#f0f921\"]],\"diverging\":[[0,\"#8e0152\"],[0.1,\"#c51b7d\"],[0.2,\"#de77ae\"],[0.3,\"#f1b6da\"],[0.4,\"#fde0ef\"],[0.5,\"#f7f7f7\"],[0.6,\"#e6f5d0\"],[0.7,\"#b8e186\"],[0.8,\"#7fbc41\"],[0.9,\"#4d9221\"],[1,\"#276419\"]]},\"xaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"automargin\":true,\"zerolinewidth\":2},\"yaxis\":{\"gridcolor\":\"white\",\"linecolor\":\"white\",\"ticks\":\"\",\"title\":{\"standoff\":15},\"zerolinecolor\":\"white\",\"automargin\":true,\"zerolinewidth\":2},\"scene\":{\"xaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2},\"yaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2},\"zaxis\":{\"backgroundcolor\":\"#E5ECF6\",\"gridcolor\":\"white\",\"linecolor\":\"white\",\"showbackground\":true,\"ticks\":\"\",\"zerolinecolor\":\"white\",\"gridwidth\":2}},\"shapedefaults\":{\"line\":{\"color\":\"#2a3f5f\"}},\"annotationdefaults\":{\"arrowcolor\":\"#2a3f5f\",\"arrowhead\":0,\"arrowwidth\":1},\"geo\":{\"bgcolor\":\"white\",\"landcolor\":\"#E5ECF6\",\"subunitcolor\":\"white\",\"showland\":true,\"showlakes\":true,\"lakecolor\":\"white\"},\"title\":{\"x\":0.05},\"mapbox\":{\"style\":\"light\"}}},\"xaxis\":{\"anchor\":\"y\",\"domain\":[0.0,1.0],\"title\":{\"text\":\"Year\"}},\"yaxis\":{\"anchor\":\"x\",\"domain\":[0.0,1.0],\"title\":{\"text\":\"Bronze\"}},\"legend\":{\"title\":{\"text\":\"Country_Name\"},\"tracegroupgap\":0},\"title\":{\"text\":\"Top 10 Países por Medalhas de Bronze (1992-2020)\"}},                        {\"responsive\": true}                    ).then(function(){\n",
-              "                            \n",
-              "var gd = document.getElementById('45a623cb-e7a4-4fde-a992-573aa2e38beb');\n",
-              "var x = new MutationObserver(function (mutations, observer) {{\n",
-              "        var display = window.getComputedStyle(gd).display;\n",
-              "        if (!display || display === 'none') {{\n",
-              "            console.log([gd, 'removed!']);\n",
-              "            Plotly.purge(gd);\n",
-              "            observer.disconnect();\n",
-              "        }}\n",
-              "}});\n",
-              "\n",
-              "// Listen for the removal of the full notebook cells\n",
-              "var notebookContainer = gd.closest('#notebook-container');\n",
-              "if (notebookContainer) {{\n",
-              "    x.observe(notebookContainer, {childList: true});\n",
-              "}}\n",
-              "\n",
-              "// Listen for the clearing of the current output cell\n",
-              "var outputEl = gd.closest('.output');\n",
-              "if (outputEl) {{\n",
-              "    x.observe(outputEl, {childList: true});\n",
-              "}}\n",
-              "\n",
-              "                        })                };                            </script>        </div>\n",
-              "</body>\n",
-              "</html>"
-            ]
-          },
-          "metadata": {}
-        }
-      ]
-    },
-    {
-      "cell_type": "markdown",
-      "source": [
-        "# Questão 3\n"
-      ],
-      "metadata": {
-        "id": "DPzDZqedJVwW"
-      },
-      "id": "DPzDZqedJVwW"
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "import dash\n",
-        "from dash import dcc, html, Input, Output\n",
-        "import plotly.express as px\n",
-        "import pandas as pd\n",
-        "\n",
-        "# Suponha que df já esteja carregado e contém colunas: Year, Host_country, Host_city, Country_Name, Gold, Silver, Bronze\n",
-        "# Exemplo:\n",
-        "# df = pd.read_csv('medalhas.csv')\n",
-        "\n",
-        "# Filtra os dados entre 1992 e 2020\n",
-        "df = df[(df['Year'] >= 1992) & (df['Year'] <= 2020)]\n",
-        "\n",
-        "app = dash.Dash(__name__)\n",
-        "\n",
-        "# Layout do app\n",
-        "app.layout = html.Div([\n",
-        "    html.H1(\"Top 10 Países por Medalhas no Ano Olímpico\"),\n",
-        "\n",
-        "    # Dropdown de ano (com país sede e cidade)\n",
-        "    dcc.Dropdown(\n",
-        "        id='year-dropdown',\n",
-        "        options=[\n",
-        "            {\n",
-        "                'label': f\"{year} - {df[df['Year'] == year]['Host_country'].iloc[0]} ({df[df['Year'] == year]['Host_city'].iloc[0]})\",\n",
-        "                'value': year\n",
-        "            }\n",
-        "            for year in sorted(df['Year'].unique())\n",
-        "        ],\n",
-        "        value=sorted(df['Year'].unique())[0]\n",
-        "    ),\n",
-        "\n",
-        "    # Dropdown de tipo de medalha\n",
-        "    dcc.Dropdown(\n",
-        "        id='medal-dropdown',\n",
-        "        options=[\n",
-        "            {'label': 'Ouro', 'value': 'ouro'},\n",
-        "            {'label': 'Prata', 'value': 'prata'},\n",
-        "            {'label': 'Bronze', 'value': 'bronze'},\n",
-        "            {'label': 'Todas', 'value': 'todas'}\n",
-        "        ],\n",
-        "        value='todas'\n",
-        "    ),\n",
-        "\n",
-        "    # Gráfico de barras\n",
-        "    dcc.Graph(id='bar-chart')\n",
-        "])\n",
-        "\n",
-        "# Callback interativo\n",
-        "@app.callback(\n",
-        "    Output('bar-chart', 'figure'),\n",
-        "    Input('year-dropdown', 'value'),\n",
-        "    Input('medal-dropdown', 'value')\n",
-        ")\n",
-        "def update_bar_chart(selected_year, tipo_medalha):\n",
-        "    # Filtra dados do ano selecionado\n",
-        "    year_df = df[df['Year'] == selected_year]\n",
-        "\n",
-        "    # Determina coluna e cor com base na medalha\n",
-        "    if tipo_medalha == 'ouro':\n",
-        "        medal_col = 'Gold'\n",
-        "        cor = 'gold'\n",
-        "        titulo = f\"Top 10 Países com Mais Medalhas de Ouro - {selected_year}\"\n",
-        "    elif tipo_medalha == 'prata':\n",
-        "        medal_col = 'Silver'\n",
-        "        cor = 'silver'\n",
-        "        titulo = f\"Top 10 Países com Mais Medalhas de Prata - {selected_year}\"\n",
-        "    elif tipo_medalha == 'bronze':\n",
-        "        medal_col = 'Bronze'\n",
-        "        cor = '#cd7f32'\n",
-        "        titulo = f\"Top 10 Países com Mais Medalhas de Bronze - {selected_year}\"\n",
-        "    elif tipo_medalha == 'todas':\n",
-        "        year_df['Total'] = year_df['Gold'] + year_df['Silver'] + year_df['Bronze']\n",
-        "        medal_col = 'Total'\n",
-        "        cor = 'darkcyan'\n",
-        "        titulo = f\"Top 10 Países com Mais Medalhas - {selected_year}\"\n",
-        "    else:\n",
-        "        return px.bar(title=\"Seleção inválida.\")\n",
-        "\n",
-        "    # Agrupa e ordena os top 10 países no ano selecionado\n",
-        "    df_medals = year_df.groupby('Country_Name')[medal_col].sum().reset_index()\n",
-        "    df_top = df_medals.sort_values(by=medal_col, ascending=False).head(10)\n",
-        "    df_top['Medalha'] = tipo_medalha.capitalize()\n",
-        "\n",
-        "    # Gráfico\n",
-        "    fig = px.bar(\n",
-        "        df_top,\n",
-        "        x='Country_Name',\n",
-        "        y=medal_col,\n",
-        "        color='Medalha',\n",
-        "        color_discrete_sequence=[cor],\n",
-        "        title=titulo\n",
-        "    )\n",
-        "    fig.update_layout(showlegend=False)\n",
-        "\n",
-        "    return fig\n",
-        "\n",
-        "# Executa o app\n",
-        "if __name__ == '__main__':\n",
-        "    app.run(debug=True)"
-      ],
-      "metadata": {
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 671
-        },
-        "id": "q4rYN5VnLvDp",
-        "outputId": "3f83b816-1956-4c64-ea48-c4ac18ef0f89"
-      },
-      "id": "q4rYN5VnLvDp",
-      "execution_count": null,
-      "outputs": [
-        {
-          "output_type": "display_data",
-          "data": {
-            "text/plain": [
-              "<IPython.core.display.Javascript object>"
-            ],
-            "application/javascript": [
-              "(async (port, path, width, height, cache, element) => {\n",
-              "    if (!google.colab.kernel.accessAllowed && !cache) {\n",
-              "      return;\n",
-              "    }\n",
-              "    element.appendChild(document.createTextNode(''));\n",
-              "    const url = await google.colab.kernel.proxyPort(port, {cache});\n",
-              "    const iframe = document.createElement('iframe');\n",
-              "    iframe.src = new URL(path, url).toString();\n",
-              "    iframe.height = height;\n",
-              "    iframe.width = width;\n",
-              "    iframe.style.border = 0;\n",
-              "    iframe.allow = [\n",
-              "        'accelerometer',\n",
-              "        'autoplay',\n",
-              "        'camera',\n",
-              "        'clipboard-read',\n",
-              "        'clipboard-write',\n",
-              "        'gyroscope',\n",
-              "        'magnetometer',\n",
-              "        'microphone',\n",
-              "        'serial',\n",
-              "        'usb',\n",
-              "        'xr-spatial-tracking',\n",
-              "    ].join('; ');\n",
-              "    element.appendChild(iframe);\n",
-              "  })(8050, \"/\", \"100%\", 650, false, window.element)"
-            ]
-          },
-          "metadata": {}
-        }
-      ]
-    },
-    {
-      "cell_type": "markdown",
-      "source": [
-        "# Questão 4"
-      ],
-      "metadata": {
-        "id": "qH9Pt8IYMdXf"
-      },
-      "id": "qH9Pt8IYMdXf"
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "import dash\n",
-        "from dash import dcc, html, Input, Output\n",
-        "import plotly.express as px\n",
-        "import pandas as pd\n",
-        "\n",
-        "# Carregando o DataFrame\n",
-        "df = pd.read_csv('Summer_olympic_Medals.csv')\n",
-        "\n",
-        "# Pré-processamento dos dados\n",
-        "df['Country_Name'] = df['Country_Name'].replace('United States', 'United States of America')\n",
-        "df = df[(df['Year'] >= 1992) & (df['Year'] <= 2020)]\n",
-        "\n",
-        "# Inicializando o aplicativo Dash\n",
-        "app = dash.Dash(__name__)\n",
-        "\n",
-        "# Layout do Dashboard\n",
-        "app.layout = html.Div([\n",
-        "    html.H1(\"Dashboard de Medalhas Olímpicas\"),\n",
-        "\n",
-        "    # Filtros de seleção\n",
-        "    html.Div([\n",
-        "        html.Label(\"Selecione o Ano Olímpico\"),\n",
-        "        dcc.Dropdown(\n",
-        "            id='year-dropdown',\n",
-        "            options=[\n",
-        "                {'label': 'Total de 1992-2020', 'value': 'total_1992_2020'}\n",
-        "            ] + [{'label': year, 'value': year} for year in sorted(df['Year'].unique())],\n",
-        "            value='total_1992_2020'  # Valor padrão\n",
-        "        ),\n",
-        "        html.Label(\"Selecione o Tipo de Medalha\"),\n",
-        "        dcc.Dropdown(\n",
-        "            id='medal-dropdown',\n",
-        "            options=[\n",
-        "                {'label': 'Ouro', 'value': 'ouro'},\n",
-        "                {'label': 'Prata', 'value': 'prata'},\n",
-        "                {'label': 'Bronze', 'value': 'bronze'},\n",
-        "                {'label': 'Todas', 'value': 'todas'}\n",
-        "            ],\n",
-        "            value='todas'  # Valor padrão\n",
-        "        ),\n",
-        "        html.Label(\"Selecione o País para o Gráfico de Pizza\"),\n",
-        "        dcc.Dropdown(\n",
-        "            id='country-dropdown',\n",
-        "            options=[{'label': country, 'value': country} for country in df['Country_Name'].unique()],\n",
-        "            value=df['Country_Name'].unique()[0]  # Valor padrão\n",
-        "        )\n",
-        "    ], style={'width': '30%', 'display': 'inline-block', 'padding': '20px'}),\n",
-        "\n",
-        "    # Div para exibir os gráficos\n",
-        "    html.Div([\n",
-        "        html.Div([dcc.Graph(id='map-figure')], style={'width': '48%', 'display': 'inline-block'}),\n",
-        "        html.Div([dcc.Graph(id='bar-chart')], style={'width': '48%', 'display': 'inline-block'}),\n",
-        "        html.Div([dcc.Graph(id='area-figure')], style={'width': '48%', 'display': 'inline-block'}),\n",
-        "        html.Div([dcc.Graph(id='pie-chart')], style={'width': '48%', 'display': 'inline-block'})\n",
-        "    ])\n",
-        "])\n",
-        "\n",
-        "\n",
-        "# Callback para atualizar o gráfico de mapa\n",
-        "@app.callback(\n",
-        "    Output('map-figure', 'figure'),\n",
-        "    Input('year-dropdown', 'value'),\n",
-        "    Input('medal-dropdown', 'value')\n",
-        ")\n",
-        "def update_map(selected_year, tipo_medalha):\n",
-        "    # Se for 'total_1992_2020', agregue os dados de 1992-2020\n",
-        "    if selected_year == 'total_1992_2020':\n",
-        "        year_df = df\n",
-        "    else:\n",
-        "        year_df = df[df['Year'] == selected_year]\n",
-        "\n",
-        "    if tipo_medalha == 'ouro':\n",
-        "        year_df['Total_Medals'] = year_df['Gold']\n",
-        "    elif tipo_medalha == 'prata':\n",
-        "        year_df['Total_Medals'] = year_df['Silver']\n",
-        "    elif tipo_medalha == 'bronze':\n",
-        "        year_df['Total_Medals'] = year_df['Bronze']\n",
-        "    elif tipo_medalha == 'todas':\n",
-        "        year_df['Total_Medals'] = year_df['Gold'] + year_df['Silver'] + year_df['Bronze']\n",
-        "\n",
-        "    # Agrupa por país e gera o gráfico de mapa\n",
-        "    df_country_medals = year_df.groupby('Country_Name')['Total_Medals'].sum().reset_index()\n",
-        "\n",
-        "    map_fig = px.choropleth(\n",
-        "        df_country_medals,\n",
-        "        locations='Country_Name',\n",
-        "        locationmode='country names',\n",
-        "        color='Total_Medals',\n",
-        "        hover_name='Country_Name',\n",
-        "        color_continuous_scale=px.colors.sequential.YlOrRd,\n",
-        "        title=f'Total de medalhas ({tipo_medalha.capitalize()})'\n",
-        "    )\n",
-        "\n",
-        "    return map_fig\n",
-        "\n",
-        "\n",
-        "# Callback para atualizar o gráfico de barras\n",
-        "@app.callback(\n",
-        "    Output('bar-chart', 'figure'),\n",
-        "    Input('year-dropdown', 'value'),\n",
-        "    Input('medal-dropdown', 'value')\n",
-        ")\n",
-        "def update_bar_chart(selected_year, tipo_medalha):\n",
-        "    # Se for 'total_1992_2020', agregue os dados de 1992-2020\n",
-        "    if selected_year == 'total_1992_2020':\n",
-        "        year_df = df\n",
-        "    else:\n",
-        "        year_df = df[df['Year'] == selected_year]\n",
-        "\n",
-        "    # Determina a coluna de medalha e o título\n",
-        "    if tipo_medalha == 'ouro':\n",
-        "        medal_col = 'Gold'\n",
-        "        cor = 'gold'\n",
-        "    elif tipo_medalha == 'prata':\n",
-        "        medal_col = 'Silver'\n",
-        "        cor = 'silver'\n",
-        "    elif tipo_medalha == 'bronze':\n",
-        "        medal_col = 'Bronze'\n",
-        "        cor = '#cd7f32'\n",
-        "    elif tipo_medalha == 'todas':\n",
-        "        year_df['Total'] = year_df['Gold'] + year_df['Silver'] + year_df['Bronze']\n",
-        "        medal_col = 'Total'\n",
-        "        cor = 'darkcyan'\n",
-        "\n",
-        "    # Agrupa os top 10 países e gera o gráfico\n",
-        "    df_medals = year_df.groupby('Country_Name')[medal_col].sum().reset_index()\n",
-        "    df_top = df_medals.sort_values(by=medal_col, ascending=False).head(10)\n",
-        "\n",
-        "    fig = px.bar(\n",
-        "        df_top,\n",
-        "        x='Country_Name',\n",
-        "        y=medal_col,\n",
-        "        color='Country_Name',\n",
-        "        color_discrete_sequence=[cor],\n",
-        "        title=f\"Top 10 Países com Mais Medalhas ({tipo_medalha.capitalize()})\"\n",
-        "    )\n",
-        "    return fig\n",
-        "\n",
-        "\n",
-        "# Callback para atualizar o gráfico de área\n",
-        "@app.callback(\n",
-        "    Output('area-figure', 'figure'),\n",
-        "    Input('medal-dropdown', 'value')\n",
-        ")\n",
-        "def update_area(tipo_medalha):\n",
-        "    # Se for 'total_1992_2020', agregue os dados de 1992-2020\n",
-        "    if tipo_medalha == 'ouro':\n",
-        "        medal_col = 'Gold'\n",
-        "    elif tipo_medalha == 'prata':\n",
-        "        medal_col = 'Silver'\n",
-        "    elif tipo_medalha == 'bronze':\n",
-        "        medal_col = 'Bronze'\n",
-        "    elif tipo_medalha == 'todas':\n",
-        "        df['Total'] = df['Gold'] + df['Silver'] + df['Bronze']\n",
-        "        medal_col = 'Total'\n",
-        "\n",
-        "    # Encontra os top 10 países\n",
-        "    df_total = df.groupby('Country_Name')[medal_col].sum().reset_index()\n",
-        "    top_10 = df_total.sort_values(by=medal_col, ascending=False).head(10)['Country_Name']\n",
-        "\n",
-        "    df_top_10 = df[df['Country_Name'].isin(top_10)]\n",
-        "\n",
-        "    country_order = df_top_10.groupby('Country_Name')[medal_col].sum().sort_values().index.tolist()\n",
-        "\n",
-        "    area_fig = px.area(\n",
-        "        df_top_10,\n",
-        "        x=\"Year\",\n",
-        "        y=medal_col,\n",
-        "        color=\"Country_Name\",\n",
-        "        title=f\"Top 10 Países por Medalhas de {tipo_medalha.capitalize()} (1992-2020)\",\n",
-        "        category_orders={\"Country_Name\": country_order}  # Ordena para empilhamento correto\n",
-        "    )\n",
-        "    return area_fig\n",
-        "\n",
-        "\n",
-        "# Callback para atualizar o gráfico de pizza\n",
-        "@app.callback(\n",
-        "    Output('pie-chart', 'figure'),\n",
-        "    Input('country-dropdown', 'value')\n",
-        ")\n",
-        "def update_pie_chart(selected_country):\n",
-        "    # Filtra os dados do país selecionado\n",
-        "    filtered_df = df[df['Country_Name'] == selected_country]\n",
-        "    if filtered_df.empty:\n",
-        "        return px.pie(title=f\"No data available for {selected_country}\")\n",
-        "\n",
-        "    medal_counts = filtered_df.agg({'Gold': 'sum', 'Silver': 'sum', 'Bronze': 'sum'})\n",
-        "\n",
-        "    # Cria o gráfico de pizza\n",
-        "    fig = px.pie(\n",
-        "        medal_counts,\n",
-        "        values=medal_counts.values,\n",
-        "        names=medal_counts.index,\n",
-        "        title=f\"Distribuição de Medalhas do País {selected_country}\",\n",
-        "        color_discrete_map={'Gold': 'gold', 'Silver': 'silver', 'Bronze': '#cd7f32'}\n",
-        "    )\n",
-        "    return fig\n",
-        "\n",
-        "\n",
-        "# Rodando o aplicativo\n",
-        "if __name__ == '__main__':\n",
-        "    app.run(debug=True)\n"
-      ],
-      "metadata": {
-        "colab": {
-          "base_uri": "https://localhost:8080/",
-          "height": 671
-        },
-        "id": "dj5yhxZYN1du",
-        "outputId": "e51fd090-632e-4aaf-e162-adfc6889c8f7"
-      },
-      "id": "dj5yhxZYN1du",
-      "execution_count": null,
-      "outputs": [
-        {
-          "output_type": "display_data",
-          "data": {
-            "text/plain": [
-              "<IPython.core.display.Javascript object>"
-            ],
-            "application/javascript": [
-              "(async (port, path, width, height, cache, element) => {\n",
-              "    if (!google.colab.kernel.accessAllowed && !cache) {\n",
-              "      return;\n",
-              "    }\n",
-              "    element.appendChild(document.createTextNode(''));\n",
-              "    const url = await google.colab.kernel.proxyPort(port, {cache});\n",
-              "    const iframe = document.createElement('iframe');\n",
-              "    iframe.src = new URL(path, url).toString();\n",
-              "    iframe.height = height;\n",
-              "    iframe.width = width;\n",
-              "    iframe.style.border = 0;\n",
-              "    iframe.allow = [\n",
-              "        'accelerometer',\n",
-              "        'autoplay',\n",
-              "        'camera',\n",
-              "        'clipboard-read',\n",
-              "        'clipboard-write',\n",
-              "        'gyroscope',\n",
-              "        'magnetometer',\n",
-              "        'microphone',\n",
-              "        'serial',\n",
-              "        'usb',\n",
-              "        'xr-spatial-tracking',\n",
-              "    ].join('; ');\n",
-              "    element.appendChild(iframe);\n",
-              "  })(8050, \"/\", \"100%\", 650, false, window.element)"
-            ]
-          },
-          "metadata": {}
-        }
-      ]
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "app = Dash(__name__)\n",
-        "server = app.server"
-      ],
-      "metadata": {
-        "colab": {
-          "base_uri": "https://localhost:8080/"
-        },
-        "id": "sdZMYCx_SMBI",
-        "outputId": "438f0cc9-b13e-470c-8339-45e7fbcf3a4c"
-      },
-      "id": "sdZMYCx_SMBI",
-      "execution_count": null,
-      "outputs": [
-        {
-          "output_type": "stream",
-          "name": "stdout",
-          "text": [
-            "Requirement already satisfied: ipynb-py-convert in /usr/local/lib/python3.11/dist-packages (0.4.6)\n"
-          ]
-        }
-      ]
-    }
-  ],
-  "metadata": {
-    "kernelspec": {
-      "display_name": "Python 3 (ipykernel)",
-      "language": "python",
-      "name": "python3"
-    },
-    "language_info": {
-      "codemirror_mode": {
-        "name": "ipython",
-        "version": 3
-      },
-      "file_extension": ".py",
-      "mimetype": "text/x-python",
-      "name": "python",
-      "nbconvert_exporter": "python",
-      "pygments_lexer": "ipython3",
-      "version": "3.10.9"
-    },
-    "colab": {
-      "provenance": [],
-      "collapsed_sections": [
-        "WIXBK4X8OXtn",
-        "LpdCoVU5DfKM",
-        "88EcZjlQDl3P"
-      ]
-    }
-  },
-  "nbformat": 4,
-  "nbformat_minor": 5
-}
+            value='todas'  # Valor padrão
+        ),
+        html.Label("Selecione o País para o Gráfico de Pizza"),
+        dcc.Dropdown(
+            id='country-dropdown',
+            options=[{'label': country, 'value': country} for country in df['Country_Name'].unique()],
+            value=df['Country_Name'].unique()[0]  # Valor padrão
+        )
+    ], style={'width': '30%', 'display': 'inline-block', 'padding': '20px'}),
+
+    # Div para exibir os gráficos
+    html.Div([
+        html.Div([dcc.Graph(id='map-figure')], style={'width': '48%', 'display': 'inline-block'}),
+        html.Div([dcc.Graph(id='bar-chart')], style={'width': '48%', 'display': 'inline-block'}),
+        html.Div([dcc.Graph(id='area-figure')], style={'width': '48%', 'display': 'inline-block'}),
+        html.Div([dcc.Graph(id='pie-chart')], style={'width': '48%', 'display': 'inline-block'})
+    ])
+])
+
+
+# Callback para atualizar o gráfico de mapa
+@app.callback(
+    Output('map-figure', 'figure'),
+    Input('year-dropdown', 'value'),
+    Input('medal-dropdown', 'value')
+)
+def update_map(selected_year, tipo_medalha):
+    # Se for 'total_1992_2020', agregue os dados de 1992-2020
+    if selected_year == 'total_1992_2020':
+        year_df = df
+    else:
+        year_df = df[df['Year'] == selected_year]
+
+    if tipo_medalha == 'ouro':
+        year_df['Total_Medals'] = year_df['Gold']
+    elif tipo_medalha == 'prata':
+        year_df['Total_Medals'] = year_df['Silver']
+    elif tipo_medalha == 'bronze':
+        year_df['Total_Medals'] = year_df['Bronze']
+    elif tipo_medalha == 'todas':
+        year_df['Total_Medals'] = year_df['Gold'] + year_df['Silver'] + year_df['Bronze']
+
+    # Agrupa por país e gera o gráfico de mapa
+    df_country_medals = year_df.groupby('Country_Name')['Total_Medals'].sum().reset_index()
+
+    map_fig = px.choropleth(
+        df_country_medals,
+        locations='Country_Name',
+        locationmode='country names',
+        color='Total_Medals',
+        hover_name='Country_Name',
+        color_continuous_scale=px.colors.sequential.YlOrRd,
+        title=f'Total de medalhas ({tipo_medalha.capitalize()})'
+    )
+
+    return map_fig
+
+
+# Callback para atualizar o gráfico de barras
+@app.callback(
+    Output('bar-chart', 'figure'),
+    Input('year-dropdown', 'value'),
+    Input('medal-dropdown', 'value')
+)
+def update_bar_chart(selected_year, tipo_medalha):
+    # Se for 'total_1992_2020', agregue os dados de 1992-2020
+    if selected_year == 'total_1992_2020':
+        year_df = df
+    else:
+        year_df = df[df['Year'] == selected_year]
+
+    # Determina a coluna de medalha e o título
+    if tipo_medalha == 'ouro':
+        medal_col = 'Gold'
+        cor = 'gold'
+    elif tipo_medalha == 'prata':
+        medal_col = 'Silver'
+        cor = 'silver'
+    elif tipo_medalha == 'bronze':
+        medal_col = 'Bronze'
+        cor = '#cd7f32'
+    elif tipo_medalha == 'todas':
+        year_df['Total'] = year_df['Gold'] + year_df['Silver'] + year_df['Bronze']
+        medal_col = 'Total'
+        cor = 'darkcyan'
+
+    # Agrupa os top 10 países e gera o gráfico
+    df_medals = year_df.groupby('Country_Name')[medal_col].sum().reset_index()
+    df_top = df_medals.sort_values(by=medal_col, ascending=False).head(10)
+
+    fig = px.bar(
+        df_top,
+        x='Country_Name',
+        y=medal_col,
+        color='Country_Name',
+        color_discrete_sequence=[cor],
+        title=f"Top 10 Países com Mais Medalhas ({tipo_medalha.capitalize()})"
+    )
+    return fig
+
+
+# Callback para atualizar o gráfico de área
+@app.callback(
+    Output('area-figure', 'figure'),
+    Input('medal-dropdown', 'value')
+)
+def update_area(tipo_medalha):
+    # Se for 'total_1992_2020', agregue os dados de 1992-2020
+    if tipo_medalha == 'ouro':
+        medal_col = 'Gold'
+    elif tipo_medalha == 'prata':
+        medal_col = 'Silver'
+    elif tipo_medalha == 'bronze':
+        medal_col = 'Bronze'
+    elif tipo_medalha == 'todas':
+        df['Total'] = df['Gold'] + df['Silver'] + df['Bronze']
+        medal_col = 'Total'
+
+    # Encontra os top 10 países
+    df_total = df.groupby('Country_Name')[medal_col].sum().reset_index()
+    top_10 = df_total.sort_values(by=medal_col, ascending=False).head(10)['Country_Name']
+
+    df_top_10 = df[df['Country_Name'].isin(top_10)]
+
+    country_order = df_top_10.groupby('Country_Name')[medal_col].sum().sort_values().index.tolist()
+
+    area_fig = px.area(
+        df_top_10,
+        x="Year",
+        y=medal_col,
+        color="Country_Name",
+        title=f"Top 10 Países por Medalhas de {tipo_medalha.capitalize()} (1992-2020)",
+        category_orders={"Country_Name": country_order}  # Ordena para empilhamento correto
+    )
+    return area_fig
+
+
+# Callback para atualizar o gráfico de pizza
+@app.callback(
+    Output('pie-chart', 'figure'),
+    Input('country-dropdown', 'value')
+)
+def update_pie_chart(selected_country):
+    # Filtra os dados do país selecionado
+    filtered_df = df[df['Country_Name'] == selected_country]
+    if filtered_df.empty:
+        return px.pie(title=f"No data available for {selected_country}")
+
+    medal_counts = filtered_df.agg({'Gold': 'sum', 'Silver': 'sum', 'Bronze': 'sum'})
+
+    # Cria o gráfico de pizza
+    fig = px.pie(
+        medal_counts,
+        values=medal_counts.values,
+        names=medal_counts.index,
+        title=f"Distribuição de Medalhas do País {selected_country}",
+        color_discrete_map={'Gold': 'gold', 'Silver': 'silver', 'Bronze': '#cd7f32'}
+    )
+    return fig
+
+
+# Rodando o aplicativo
+if __name__ == '__main__':
+    app.run(debug=True)
+
+app = Dash(__name__)
+server = app.server
